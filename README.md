@@ -44,8 +44,9 @@ __Transform according to Json Schema__
 ```erlang
 Json = jet:decode(binary_to_list('{"name":"anthony"}')),
 Schema = jet:decode(binary_to_list('{"type":"object","properties":{"name":{"type":"string"}}')),
+{ok, #{ <<"name">> => <<"anthony">> }} = jet_schema:transform(Schema, Json),
 Opts = #{ key_type => atom, string_type => list },
-{ok, #{ name => "anthony" }} = jet_translate:decode(Schema, Json, Opts).
+{ok, #{ name => "anthony" }} = jet_schema:transform(Schema, Json, Opts).
 ```
 
 ##### Error Format
@@ -64,4 +65,20 @@ Will follow the specification [to be determined](https://github.com/json-schema-
                   schema_path := "#/oneOf/1/properties/membershipType/enum",
                   data_path := "/membershipType",
                   message := "value does not match any of the allowed values" } ] }.
+```
+
+### Pattern Matching
+
+```erlang
+Json = jet:decode(binary_to_list('{"name":"anthony"}')),
+MatchList = jet:decode(binary_to_list('[{"case":"has_name", "type":"object","properties":{"name":{"type":"string"}}]')),
+{ok, <<"has_name">>} = jet:match(MatchList, Json).
+```
+
+##### Match Rules
+
+```erlang
+Json = jet:decode(binary_to_list('{"name":"anthony"}')),
+MatchList = jet:decode(binary_to_list('[{"case":"has_name", "type":"object","properties":{"name":{"type":"string"}}]')),
+{ok, <<"has_name">>} = jet:match(MatchList, Json).
 ```
