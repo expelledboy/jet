@@ -87,7 +87,7 @@ parse(<<>>, []) ->
 parse(<<>>, [[] | _]) ->
     throw({error, trailing_slash});
 parse(<<>>, [Last | Acc]) ->
-    Finished = lists:reverse(Last),    
+    Finished = lists:reverse(Last),
     lists:map(fun list_to_binary/1, lists:reverse([Finished | Acc]));
 parse(<<"/", Rest/binary>>, []) ->
     parse(Rest, [[]]);
@@ -123,41 +123,41 @@ get_prop_value({pathList, [H | T]}, Json) when is_map(Json) ->
     % map, assume current path element is key in map
     case maps:find(H, Json) of
             {ok, Value} ->
-                get_prop_value({pathList,T}, Value);
-            error -> 
+                get_prop_value({pathList, T}, Value);
+            error ->
                 undefined
         end;
 get_prop_value({pathList, [H | T]}, Json) when is_list(Json) ->
-    {Index,_}=string:to_integer(H),
+    {Index, _}=string:to_integer(H),
     % list, assume current path element is index of list element
     case (Index<0) of
         true ->
-            get_prop_value({pathList,T}, lists:nth(length(Json)+Index+1, Json));
+            get_prop_value({pathList, T}, lists:nth(length(Json)+Index+1, Json));
         false ->
-            get_prop_value({pathList,T}, lists:nth(Index+1, Json))
+            get_prop_value({pathList, T}, lists:nth(Index+1, Json))
     end;
-get_prop_value({pathList,[]}, Value) ->
+get_prop_value({pathList, []}, Value) ->
     %we have reached the destination of the path, return value
     Value;
 get_prop_value(PathString, Json) ->
     PathList = string:lexemes(PathString, "/"),
-    get_prop_value({pathList,PathList}, Json).
+    get_prop_value({pathList, PathList}, Json).
 
 % Returns a new nested map from an existing map with a property-path/value combination added:
 % Use like this: Map = add_prop_value(PathString, Value, ExistingMap)
 add_prop_value({pathList, [H | T]}, Value, Json) when is_map(Json) ->
     case (maps:is_key(H, Json)) of
         true ->
-            maps:update(H,add_prop_value({pathList,T}, Value, maps:get(H,Json)),Json);
+            maps:update(H, add_prop_value({pathList, T}, Value, maps:get(H, Json)), Json);
         false ->
-            maps:put(H,add_prop_value({pathList,T}, Value, maps:new()), Json)
+            maps:put(H, add_prop_value({pathList, T}, Value, maps:new()), Json)
     end;
 add_prop_value({pathList, _PathList}, _Value, Json) when is_list(Json) ->
     % cannot add specific array elements at specified index with this function
     % i.e. can't add_prop_value("/arrayproperty/2/propertyofarrayelement",Value,Map)
     {badpath};
-add_prop_value({pathList,[]}, Value, _Json) ->
+add_prop_value({pathList, []}, Value, _Json) ->
     Value;
 add_prop_value(PathString, Value, Map) ->
     PathList = string:lexemes(PathString, "/"),
-    add_prop_value({pathList,PathList}, Value, Map).
+    add_prop_value({pathList, PathList}, Value, Map).

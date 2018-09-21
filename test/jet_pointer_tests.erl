@@ -4,11 +4,11 @@
 
 -compile(export_all).
 
--define(mod, jet_pointer).
+-define(MOD, jet_pointer).
 
 pointer_test_() ->
     {ok, File} =
-	file:read_file("test/fixtures/jet_pointer.json"),
+    file:read_file("test/fixtures/jet_pointer.json"),
     Suite = jiffy:decode(File, [return_maps]),
     lists:map(fun gen_pointer_tests/1, Suite).
 
@@ -21,7 +21,8 @@ gen_pointer_tests(Path) ->
             lists:map(fun(#{ <<"description">> := Description,
                             <<"path">> := Pointer,
                             <<"result">> := Expected }) ->
-                        {Description, ?_assertEqual(Expected, ((?mod):get_prop_value(Pointer,Object)))}
+                        {Description,
+                        ?_assertEqual(Expected, ((?MOD):get_prop_value(Pointer, Object)))}
                     end, Pointers);
          <<"add">> ->
             Objects = maps:get(<<"objects">>, Path),
@@ -34,10 +35,10 @@ gen_pointer_tests(Path) ->
 
 create_object(Properties) ->
     lists:foldl(
-        fun(Property, Map) -> 
+        fun(Property, Map) ->
             Path = maps:get(<<"path">>, Property),
             Value = maps:get(<<"value">>, Property),
-            (?mod):add_prop_value(Path,Value,Map)
-        end, 
-        maps:new(), 
+            (?MOD):add_prop_value(Path, Value, Map)
+        end,
+        maps:new(),
         Properties).
