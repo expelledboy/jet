@@ -1,0 +1,799 @@
+[
+    {
+        "object": 
+        {
+            "id": 123,
+            "registered":true,
+            "details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] }, 
+            "contacts": 
+            [ 
+                { "name": "John", "age": 30, "balance": 15000 },
+                { "name": "Mary", "age": 50, "balance": 20000.50 } 
+            ]
+        },
+        "patterns": 
+        [
+            {
+                "description": "=(integer,integer)",
+                "pattern": { "/details/age": { "=": 25 } },
+                "result": true
+            },
+            {
+                "description": "=(float,float)",
+                "pattern": { "/details/balance": { "=": 100.05 } },
+                "result": true
+            },
+            {
+                "description": "=(float,integer)",
+                "pattern": { "/contacts/0/balance": { "=": 15000 } },
+                "result": true
+            },
+            {
+                "description": "=(bool,bool)",
+                "pattern": { "/registered": { "=": true } },
+                "result": true
+            },
+            {
+                "description": "=(string,string)",
+                "pattern": { "/details/name": { "=": "Zeus" } },
+                "result": true
+            },
+            {
+                "description": "=(string,integer)",
+                "pattern": { "/details/name": { "=": 4 } },
+                "result": true
+            },
+            {
+                "description": "=(list,integer)",
+                "pattern": { "/contacts": { "=": 2 } },
+                "result": true
+            },
+            {
+                "description": "=(list,list)",
+                "pattern": { "/details/numbers": { "=": ["0712228373","0112738292"] } },
+                "result": true
+            },
+            {
+                "description": "<(integer,integer)",
+                "pattern": { "/details/age": { "<": 26 } },
+                "result": true
+            },
+            {
+                "description": "<(float,float)",
+                "pattern": { "/details/balance": { "<": 110 } },
+                "result": true
+            },
+            {
+                "description": "<(float,integer)",
+                "pattern": { "/contacts/0/balance": { "<": 15001 } },
+                "result": true
+            },
+            {
+                "description": "<(string,string)",
+                "pattern": { "/details/name": { "<": "Zzzz" } },
+                "result": true
+            },
+            {
+                "description": "<(string,integer)",
+                "pattern": { "/details/name": { "<": 5 } },
+                "result": true
+            },
+            {
+                "description": "<(list,integer)",
+                "pattern": { "/contacts": { "<": 3 } },
+                "result": true
+            },
+            {
+                "description": ">(integer,integer)",
+                "pattern": { "/details/age": { ">": 20 } },
+                "result": true
+            },
+            {
+                "description": ">(float,float)",
+                "pattern": { "/details/balance": { ">": 90 } },
+                "result": true
+            },
+            {
+                "description": ">(float,integer)",
+                "pattern": { "/contacts/0/balance": { ">": 14001 } },
+                "result": true
+            },
+            {
+                "description": ">(string,string)",
+                "pattern": { "/details/name": { ">": "Abdef" } },
+                "result": true
+            },
+            {
+                "description": ">(string,integer)",
+                "pattern": { "/details/name": { ">": 2 } },
+                "result": true
+            },
+            {
+                "description": ">(list,integer)",
+                "pattern": { "/contacts": { ">": 1 } },
+                "result": true
+            },
+            {
+                "description": "<=(integer,integer)",
+                "pattern": { "/details/age": { "<=": 25 } },
+                "result": true
+            },
+            {
+                "description": "<=(float,float)",
+                "pattern": { "/details/balance": { "<=": 100.051 } },
+                "result": true
+            },
+            {
+                "description": "<=(float,integer)",
+                "pattern": { "/contacts/0/balance": { "<=": 15000 } },
+                "result": true
+            },
+            {
+                "description": "<=(string,string)",
+                "pattern": { "/details/name": { "<=": "Zeus" } },
+                "result": true
+            },
+            {
+                "description": "<=(string,integer)",
+                "pattern": { "/details/name": { "<=": 4 } },
+                "result": true
+            },
+            {
+                "description": "<=(list,integer)",
+                "pattern": { "/contacts": { "<=": 2 } },
+                "result": true
+            },
+            {
+                "description": ">=(integer,integer)",
+                "pattern": { "/details/age": { ">=": 25 } },
+                "result": true
+            },
+            {
+                "description": ">=(float,float)",
+                "pattern": { "/details/balance": { ">=": 100.05 } },
+                "result": true
+            },
+            {
+                "description": ">=(float,integer)",
+                "pattern": { "/contacts/0/balance": { ">=": 15000 } },
+                "result": true
+            },
+            {
+                "description": ">=(string,string)",
+                "pattern": { "/details/name": { ">=": "Zeus" } },
+                "result": true
+            },
+            {
+                "description": ">=(string,integer)",
+                "pattern": { "/details/name": { ">=": 4 } },
+                "result": true
+            },
+            {
+                "description": ">=(list,integer)",
+                "pattern": { "/contacts": { ">=": 2 } },
+                "result": true
+            },
+            {
+                "description": "in(any,list)",
+                "pattern": { "/details/name": { "in": ["John","Mary","Zeus"] } },
+                "result": true
+            },
+            {
+                "description": "has(list,any)",
+                "pattern": { "/contacts": { "has": { "name": "John", "age": 30, "balance": 15000 } } },
+                "result": true
+            },
+            {
+                "description": "type(any,integer)",
+                "pattern": { "/details/age": { "type": "integer" } },
+                "result": true
+            },
+            {
+                "description": "type(any,float)",
+                "pattern": { "/details/balance": { "type": "float" } },
+                "result": true
+            },
+            {
+                "description": "type(any,string)",
+                "pattern": { "/details/name": { "type": "string" } },
+                "result": true
+            },
+            {
+                "description": "type(any,array)",
+                "pattern": { "/contacts": { "type": "array" } },
+                "result": true
+            },
+            {
+                "description": "type(any,object)",
+                "pattern": { "/contacts/0": { "type": "object" } },
+                "result": true
+            },
+            {
+                "description": "=(integer,integer)",
+                "pattern": { "/details/age": { "=": 25 } },
+                "result": true
+            },
+            {
+                "description": "=(float,float)",
+                "pattern": { "/details/balance": { "=": 100.05 } },
+                "result": true
+            },
+            {
+                "description": "=(float,integer)",
+                "pattern": { "/contacts/0/balance": { "=": 15000 } },
+                "result": true
+            },
+            {
+                "description": "=(bool,bool)",
+                "pattern": { "/registered": { "=": true } },
+                "result": true
+            },
+            {
+                "description": "=(string,string)",
+                "pattern": { "/details/name": { "=": "Zeus" } },
+                "result": true
+            },
+            {
+                "description": "=(string,integer)",
+                "pattern": { "/details/name": { "=": 4 } },
+                "result": true
+            },
+            {
+                "description": "=(list,integer)",
+                "pattern": { "/contacts": { "=": 2 } },
+                "result": true
+            },
+            {
+                "description": "<(integer,integer)",
+                "pattern": { "/details/age": { "<": 26 } },
+                "result": true
+            },
+            {
+                "description": "<(float,float)",
+                "pattern": { "/details/balance": { "<": 110 } },
+                "result": true
+            },
+            {
+                "description": "<(float,integer)",
+                "pattern": { "/contacts/0/balance": { "<": 15001 } },
+                "result": true
+            },
+            {
+                "description": "<(string,string)",
+                "pattern": { "/details/name": { "<": "Zzzz" } },
+                "result": true
+            },
+            {
+                "description": "<(string,integer)",
+                "pattern": { "/details/name": { "<": 5 } },
+                "result": true
+            },
+            {
+                "description": "<(list,integer)",
+                "pattern": { "/contacts": { "<": 3 } },
+                "result": true
+            },
+            {
+                "description": ">(integer,integer)",
+                "pattern": { "/details/age": { ">": 20 } },
+                "result": true
+            },
+            {
+                "description": ">(float,float)",
+                "pattern": { "/details/balance": { ">": 90 } },
+                "result": true
+            },
+            {
+                "description": ">(float,integer)",
+                "pattern": { "/contacts/0/balance": { ">": 14001 } },
+                "result": true
+            },
+            {
+                "description": ">(string,string)",
+                "pattern": { "/details/name": { ">": "Abdef" } },
+                "result": true
+            },
+            {
+                "description": ">(string,integer)",
+                "pattern": { "/details/name": { ">": 2 } },
+                "result": true
+            },
+            {
+                "description": ">(list,integer)",
+                "pattern": { "/contacts": { ">": 1 } },
+                "result": true
+            },
+            {
+                "description": "<=(integer,integer)",
+                "pattern": { "/details/age": { "<=": 25 } },
+                "result": true
+            },
+            {
+                "description": "<=(float,float)",
+                "pattern": { "/details/balance": { "<=": 100.051 } },
+                "result": true
+            },
+            {
+                "description": "<=(float,integer)",
+                "pattern": { "/contacts/0/balance": { "<=": 15000 } },
+                "result": true
+            },
+            {
+                "description": "<=(string,string)",
+                "pattern": { "/details/name": { "<=": "Zeus" } },
+                "result": true
+            },
+            {
+                "description": "<=(string,integer)",
+                "pattern": { "/details/name": { "<=": 4 } },
+                "result": true
+            },
+            {
+                "description": "<=(list,integer)",
+                "pattern": { "/contacts": { "<=": 2 } },
+                "result": true
+            },
+            {
+                "description": ">=(integer,integer)",
+                "pattern": { "/details/age": { ">=": 25 } },
+                "result": true
+            },
+            {
+                "description": ">=(float,float)",
+                "pattern": { "/details/balance": { ">=": 100.05 } },
+                "result": true
+            },
+            {
+                "description": ">=(float,integer)",
+                "pattern": { "/contacts/0/balance": { ">=": 15000 } },
+                "result": true
+            },
+            {
+                "description": ">=(string,string)",
+                "pattern": { "/details/name": { ">=": "Zeus" } },
+                "result": true
+            },
+            {
+                "description": ">=(string,integer)",
+                "pattern": { "/details/name": { ">=": 4 } },
+                "result": true
+            },
+            {
+                "description": ">=(list,integer)",
+                "pattern": { "/contacts": { ">=": 2 } },
+                "result": true
+            },
+            {
+                "description": "in(any,list)",
+                "pattern": { "/details/name": { "in": ["John","Mary","Zeus"] } },
+                "result": true
+            },
+            {
+                "description": "has(list,any)",
+                "pattern": { "/contacts": { "has": { "name": "John", "age": 30, "balance": 15000 } } },
+                "result": true
+            },
+            {
+                "description": "type(any,integer)",
+                "pattern": { "/details/age": { "type": "integer" } },
+                "result": true
+            },
+            {
+                "description": "type(any,float)",
+                "pattern": { "/details/balance": { "type": "float" } },
+                "result": true
+            },
+            {
+                "description": "type(any,string)",
+                "pattern": { "/details/name": { "type": "string" } },
+                "result": true
+            },
+            {
+                "description": "type(any,array)",
+                "pattern": { "/contacts": { "type": "array" } },
+                "result": true
+            },
+            {
+                "description": "type(any,object)",
+                "pattern": { "/contacts/0": { "type": "object" } },
+                "result": true
+            },
+            {
+                "description": "=(integer,integer)",
+                "pattern": { "/details/age": { "=": 25 } },
+                "result": true
+            },
+            {
+                "description": "=(float,float)",
+                "pattern": { "/details/balance": { "=": 100.05 } },
+                "result": true
+            },
+            {
+                "description": "=(float,integer)",
+                "pattern": { "/contacts/0/balance": { "=": 15000 } },
+                "result": true
+            },
+            {
+                "description": "=(bool,bool)",
+                "pattern": { "/registered": { "=": true } },
+                "result": true
+            },
+            {
+                "description": "=(string,string)",
+                "pattern": { "/details/name": { "=": "Zeus" } },
+                "result": true
+            },
+            {
+                "description": "=(string,integer)",
+                "pattern": { "/details/name": { "=": 4 } },
+                "result": true
+            },
+            {
+                "description": "=(list,integer)",
+                "pattern": { "/contacts": { "=": 2 } },
+                "result": true
+            },
+            {
+                "description": "<(integer,integer)",
+                "pattern": { "/details/age": { "<": 26 } },
+                "result": true
+            },
+            {
+                "description": "<(float,float)",
+                "pattern": { "/details/balance": { "<": 110 } },
+                "result": true
+            },
+            {
+                "description": "<(float,integer)",
+                "pattern": { "/contacts/0/balance": { "<": 15001 } },
+                "result": true
+            },
+            {
+                "description": "<(string,string)",
+                "pattern": { "/details/name": { "<": "Zzzz" } },
+                "result": true
+            },
+            {
+                "description": "<(string,integer)",
+                "pattern": { "/details/name": { "<": 5 } },
+                "result": true
+            },
+            {
+                "description": "<(list,integer)",
+                "pattern": { "/contacts": { "<": 3 } },
+                "result": true
+            },
+            {
+                "description": ">(integer,integer)",
+                "pattern": { "/details/age": { ">": 20 } },
+                "result": true
+            },
+            {
+                "description": ">(float,float)",
+                "pattern": { "/details/balance": { ">": 90 } },
+                "result": true
+            },
+            {
+                "description": ">(float,integer)",
+                "pattern": { "/contacts/0/balance": { ">": 14001 } },
+                "result": true
+            },
+            {
+                "description": ">(string,string)",
+                "pattern": { "/details/name": { ">": "Abdef" } },
+                "result": true
+            },
+            {
+                "description": ">(string,integer)",
+                "pattern": { "/details/name": { ">": 2 } },
+                "result": true
+            },
+            {
+                "description": ">(list,integer)",
+                "pattern": { "/contacts": { ">": 1 } },
+                "result": true
+            },
+
+            {
+                "description": "<=(integer,integer)",
+                "pattern": { "/details/age": { "<=": 25 } },
+                "result": true
+            },
+            {
+                "description": "<=(float,float)",
+                "pattern": { "/details/balance": { "<=": 100.051 } },
+                "result": true
+            },
+            {
+                "description": "<=(float,integer)",
+                "pattern": { "/contacts/0/balance": { "<=": 15000 } },
+                "result": true
+            },
+            {
+                "description": "<=(string,string)",
+                "pattern": { "/details/name": { "<=": "Zeus" } },
+                "result": true
+            },
+            {
+                "description": "<=(string,integer)",
+                "pattern": { "/details/name": { "<=": 4 } },
+                "result": true
+            },
+            {
+                "description": "<=(list,integer)",
+                "pattern": { "/contacts": { "<=": 2 } },
+                "result": true
+            },
+            {
+                "description": ">=(integer,integer)",
+                "pattern": { "/details/age": { ">=": 25 } },
+                "result": true
+            },
+            {
+                "description": ">=(float,float)",
+                "pattern": { "/details/balance": { ">=": 100.05 } },
+                "result": true
+            },
+            {
+                "description": ">=(float,integer)",
+                "pattern": { "/contacts/0/balance": { ">=": 15000 } },
+                "result": true
+            },
+            {
+                "description": ">=(string,string)",
+                "pattern": { "/details/name": { ">=": "Zeus" } },
+                "result": true
+            },
+            {
+                "description": ">=(string,integer)",
+                "pattern": { "/details/name": { ">=": 4 } },
+                "result": true
+            },
+            {
+                "description": ">=(list,integer)",
+                "pattern": { "/contacts": { ">=": 2 } },
+                "result": true
+            },
+            {
+                "description": "in(any,list)",
+                "pattern": { "/details/name": { "in": ["John","Mary","Zeus"] } },
+                "result": true
+            },
+            {
+                "description": "has(list,any)",
+                "pattern": { "/contacts": { "has": { "name": "John", "age": 30, "balance": 15000 } } },
+                "result": true
+            },
+            {
+                "description": "type(any,integer)",
+                "pattern": { "/details/age": { "type": "integer" } },
+                "result": true
+            },
+            {
+                "description": "type(any,float)",
+                "pattern": { "/details/balance": { "type": "float" } },
+                "result": true
+            },
+            {
+                "description": "type(any,string)",
+                "pattern": { "/details/name": { "type": "string" } },
+                "result": true
+            },
+            {
+                "description": "type(any,array)",
+                "pattern": { "/contacts": { "type": "array" } },
+                "result": true
+            },
+            {
+                "description": "type(any,object)",
+                "pattern": { "/contacts/0": { "type": "object" } },
+                "result": true
+            },
+            {
+                "description": "=(integer,integer) - no match",
+                "pattern": { "/details/age": { "=": 20 } },
+                "result": false
+            },
+            {
+                "description": "=(float,float) - no match",
+                "pattern": { "/details/balance": { "=": 10.05 } },
+                "result": false
+            },
+            {
+                "description": "=(float,integer) - no match",
+                "pattern": { "/contacts/0/balance": { "=": 1000 } },
+                "result": false
+            },
+            {
+                "description": "=(bool,bool) - no match",
+                "pattern": { "/registered": { "=": false } },
+                "result": false
+            },
+            {
+                "description": "=(string,string) - no match",
+                "pattern": { "/details/name": { "=": "Pete" } },
+                "result": false
+            },
+            {
+                "description": "=(string,integer) - no match",
+                "pattern": { "/details/name": { "=": 2 } },
+                "result": false
+            },
+            {
+                "description": "=(list,integer) - no match",
+                "pattern": { "/contacts": { "=": 1 } },
+                "result": false
+            },
+            {
+                "description": "<(integer,integer) - no match",
+                "pattern": { "/details/age": { "<": 15 } },
+                "result": false
+            },
+            {
+                "description": "<(float,float) - no match",
+                "pattern": { "/details/balance": { "<": 50 } },
+                "result": false
+            },
+            {
+                "description": "<(float,integer) - no match",
+                "pattern": { "/contacts/0/balance": { "<": 0 } },
+                "result": false
+            },
+            {
+                "description": "<(string,string) - no match",
+                "pattern": { "/details/name": { "<": "Abcde" } },
+                "result": false
+            },
+            {
+                "description": "<(string,integer) - no match",
+                "pattern": { "/details/name": { "<": 1 } },
+                "result": false
+            },
+            {
+                "description": "<(list,integer) - no match",
+                "pattern": { "/contacts": { "<": 0 } },
+                "result": false
+            },
+            {
+                "description": ">(integer,integer) - no match",
+                "pattern": { "/details/age": { ">": 50 } },
+                "result": false
+            },
+            {
+                "description": ">(float,float) - no match",
+                "pattern": { "/details/balance": { ">": 1000 } },
+                "result": false
+            },
+            {
+                "description": ">(float,integer) - no match",
+                "pattern": { "/contacts/0/balance": { ">": 100000 } },
+                "result": false
+            },
+            {
+                "description": ">(string,string) - no match",
+                "pattern": { "/details/name": { ">": "Zzzzzzz" } },
+                "result": false
+            },
+            {
+                "description": ">(string,integer) - no match",
+                "pattern": { "/details/name": { ">": 90 } },
+                "result": false
+            },
+            {
+                "description": ">(list,integer) - no match",
+                "pattern": { "/contacts": { ">": 40 } },
+                "result": false
+            },
+            {
+                "description": "<=(integer,integer) - no match",
+                "pattern": { "/details/age": { "<=": -1 } },
+                "result": false
+            },
+            {
+                "description": "<=(float,float) - no match",
+                "pattern": { "/details/balance": { "<=": 10 } },
+                "result": false
+            },
+            {
+                "description": "<=(float,integer) - no match",
+                "pattern": { "/contacts/0/balance": { "<=": 1000 } },
+                "result": false
+            },
+            {
+                "description": "<=(string,string) - no match",
+                "pattern": { "/details/name": { "<=": "Abcde" } },
+                "result": false
+            },
+            {
+                "description": "<=(string,integer) - no match",
+                "pattern": { "/details/name": { "<=": 2 } },
+                "result": false
+            },
+            {
+                "description": "<=(list,integer) - no match",
+                "pattern": { "/contacts": { "<=": 0 } },
+                "result": false
+            },
+            {
+                "description": ">=(integer,integer) - no match",
+                "pattern": { "/details/age": { ">=": 1000 } },
+                "result": false
+            },
+            {
+                "description": ">=(float,float) - no match",
+                "pattern": { "/details/balance": { ">=": 1000000 } },
+                "result": false
+            },
+            {
+                "description": ">=(float,integer) - no match",
+                "pattern": { "/contacts/0/balance": { ">=": 2121676 } },
+                "result": false
+            },
+            {
+                "description": ">=(string,string) - no match",
+                "pattern": { "/details/name": { ">=": "Zzzzzz" } },
+                "result": false
+            },
+            {
+                "description": ">=(string,integer) - no match",
+                "pattern": { "/details/name": { ">=": 100 } },
+                "result": false
+            },
+            {
+                "description": ">=(list,integer) - no match",
+                "pattern": { "/contacts": { ">=": 50 } },
+                "result": false
+            },
+            {
+                "description": "in(any,list) - no match",
+                "pattern": { "/details/name": { "in": ["Andrew","Alexa"] } },
+                "result": false
+            },
+            {
+                "description": "has(list,any) - no match",
+                "pattern": { "/contacts": { "has": { "name": "Alexa", "age": 30, "balance": 15000 } } },
+                "result": false
+            },
+            {
+                "description": "type(any,integer) - no match",
+                "pattern": { "/details/name": { "type": "integer" } },
+                "result": false
+            },
+            {
+                "description": "type(any,float) - no match",
+                "pattern": { "/details/name": { "type": "float" } },
+                "result": false
+            },
+            {
+                "description": "type(any,string) - no match",
+                "pattern": { "/details/balance": { "type": "string" } },
+                "result": false
+            },
+            {
+                "description": "type(any,array) - no match",
+                "pattern": { "/details/balance": { "type": "array" } },
+                "result": false
+            },
+            {
+                "description": "type(any,object) - no match",
+                "pattern": { "/details/balance": { "type": "object" } },
+                "result": false
+            },
+            {
+                "description": "type(any,object) - no match",
+                "pattern": { "/details/balance": { "type": "object" } },
+                "result": false
+            },
+            {
+                "description": "and/or/not pattern",
+                "pattern": { "and": [ {"not": {"/details/balance": { "=": 0 }}, "/details/name": {"=":"Zeus"}},{"or":[{"/id":{"=":231}},{"/registered": {"=": true}}]} ] },
+                "result": true
+            },
+            {
+                "description": "and/or/not pattern - no match",
+                "pattern": { "and": [ {"not": {"/details/balance": { "=": 0 }}, "/details/name": {"=":"Pete"}},{"or":[{"/id":{"=":231}},{"/registered": {"=": false}}]} ] },
+                "result": false
+            }
+        ]
+    }      
+]
