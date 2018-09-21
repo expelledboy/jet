@@ -4,7 +4,7 @@
 -export([ start/2, stop/1 ]).
 
 start(_Type, _StartArgs) ->
-  ok = jet_cache:install().
+    ok = jet_cache:install().
 
 stop(_State) ->
-  ok.
+    ok.

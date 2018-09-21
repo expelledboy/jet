@@ -12,5 +12,4 @@ trim_trailing_whitespace = true
 # 4 space indentation
 [*.{erl,src,hrl}]
 indent_style = space
-tab_width = 8
-indent_size = 2
+indent_size = 4
