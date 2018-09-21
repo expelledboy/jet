@@ -1,4 +1,4 @@
-all: build
+all: hooks build
 
 build:
 	rebar3 compile
@@ -6,7 +6,16 @@ build:
 clean:
 	rebar3 clean
 
+lint:
+	rebar3 as lint lint
+
 test:
 	rebar3 do eunit --cover, cover --verbose
 
-.PHONY: all build clean test
+hooks: .git/hooks/pre-commit
+
+.git/hooks/pre-commit:
+	echo 'make lint test' > $@
+	chmod +x $@
+
+.PHONY: all build clean test hooks
