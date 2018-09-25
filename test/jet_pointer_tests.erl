@@ -33,6 +33,14 @@ gen_pointer_tests(Path) ->
                       end, Objects)
     end.
 
+%%
+%% The jet_pointer function add_prop_value takes a supplied object and adds
+%% both the property specified and it's value to the object, creating or updating any nested
+%% properties required if a deep path to the property is supplied (e.g /details/age)
+%% It is mainly used by the transformer and merge code to create new objects iteratively
+%% so the tests construct objects by successively adding properties, hence this function
+%%
+
 create_object(Properties) ->
     lists:foldl(
         fun(Property, Map) ->

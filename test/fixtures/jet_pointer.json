@@ -1,65 +1,65 @@
 [
     {
         "test-type": "get",
-        "object": 
+        "object":
         {
             "id": 123,
             "registered":true,
-            "details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] }, 
-            "contacts": 
-            [ 
+            "details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] },
+            "contacts":
+            [
                 { "name": "John", "age": 30, "balance": 15000 },
-                { "name": "Mary", "age": 50, "balance": 20000.50 } 
+                { "name": "Mary", "age": 50, "balance": 20000.50 }
             ]
         },
-        "pointers": 
+        "pointers":
         [
-            {
-                "description": "get property: root property",
-                "path": "/id",
-                "result": 123
-            },
-            {
-                "description": "get property: nested array from first element",
-                "path": "/details/numbers/0",
-                "result": "0712228373"
-            },
-            {
-                "description": "get property: nested array from last element",
-                "path": "/details/numbers/-1",
-                "result": "0112738292"
-            },
-            {
-                "description": "get property: nested object in array",
-                "path": "/contacts/1/age",
-                "result": 50
-            }
+					{
+							"description": "get property: root property",
+							"path": "/id",
+							"result": 123
+					},
+					{
+							"description": "get property: nested array from first element",
+							"path": "/details/numbers/0",
+							"result": "0712228373"
+					},
+					{
+							"description": "get property: nested array from last element",
+							"path": "/details/numbers/-1",
+							"result": "0112738292"
+					},
+					{
+							"description": "get property: nested object in array",
+							"path": "/contacts/1/age",
+							"result": 50
+					}
         ]
     },
     {
         "test-type": "get",
-        "object": 
+        "object":
         [
             {
                 "id": 123,
                 "registered":true,
-                "details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] }, 
-                "contacts": 
-                [ 
+                "details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] },
+                "contacts":
+                [
                     { "name": "John", "age": 30, "balance": 15000 },
-                    { "name": "Mary", "age": 50, "balance": 20000.50 } 
+                    { "name": "Mary", "age": 50, "balance": 20000.50 }
                 ]
             },
             {
                 "id": 231,
                 "registered":false,
-                "details": { "name": "Mary", "age": 35, "balance": 10000.05, "numbers": ["0712228373", "0112738292"] }, 
-                "contacts": 
-                [ 
+                "details": { "name": "Mary", "age": 35, "balance": 10000.05, "numbers": ["0712228373", "0112738292"] },
+                "contacts":
+                [
                 ]
             }
         ],
-        "pointers": 
+        "pointers":
         [
             {
                 "description": "get property: root object is array",
@@ -89,7 +89,7 @@
                         "value": 100.03
                     }
                 ],
-                "result": 
+                "result":
                 {
                     "name": "Fred",
                     "age": 20,
@@ -121,7 +121,7 @@
                         "value": 100.01
                     }
                 ],
-                "result": 
+                "result":
                 {
                     "name": "Fred",
                     "age": 20,

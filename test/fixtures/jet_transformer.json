@@ -1,0 +1,67 @@
+[
+	{
+			"object":
+			{
+					"id": 123,
+					"registered":true,
+					"hash": "12345",
+					"details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] },
+					"contacts":
+					[
+							{ "name": "John", "age": 30, "balance": 15000 },
+							{ "name": "Mary", "age": 50, "balance": 20000.50 }
+					]
+			},
+			"transforms":
+			[
+				{
+						"description": "to flat object transform",
+						"transform": {"/name": "/details/name", "/age": {"path": "/details/age"}, "/contacts": "/contacts"},
+						"result": {"name": "Zeus", "age": 25, "contacts": [
+								{ "name": "John", "age": 30, "balance": 15000 },
+								{ "name": "Mary", "age": 50, "balance": 20000.50 }
+						]}
+				},
+				{
+					"description": "to flat object with conversion transforms",
+					"transform": {"/name": "/details/name",
+												"/age": {"path": "/details/age", "convert": "to_bitstring"},
+												"/hash-int":{"path": "/hash", "convert": "to_integer"}},
+					"result": {"name": "Zeus", "age": "25", "hash-int": 12345 }
+				},
+				{
+					"description": "object from props transform",
+					"transform": {"/person":
+												 {"object": {"/id": "/id", "name": "/details/name", "/age": "/details/age"}}},
+					"result": {"person": {"id":123, "name": "Zeus", "age": 25}}
+				},
+				{
+					"description": "foreach transform",
+					"transform": {"/name": "/details/name", "/age": "/details/age", "/contacts":
+							{"foreach":
+								{
+									"source-array": "/contacts",
+									"properties":	{"/id": "/id", "/person": "0/name", "/age": "0/age"}
+								}}},
+					"result": {"name": "Zeus", "age": 25, "contacts": [
+							{ "id": 123, "person": "John", "age": 30},
+							{ "id": 123, "person": "Mary", "age": 50}
+					]}
+				},
+				{
+					"description": "complex foreach transform",
+					"transform": {"/name": "/details/name", "/age": "/details/age", "/contacts":
+							{"foreach":
+								{
+									"source-array": "/contacts",
+									"properties":	{"/id": "/id", "/person": {"object": {"name": "0/name", "/age": {"path": "0/age", "convert": "to_bitstring"}}}}
+								}}},
+					"result": {"name": "Zeus", "age": 25, "contacts": [
+							{ "id": 123, "person": {"name": "John", "age": "30"}},
+							{ "id": 123, "person": {"name": "Mary", "age": "50"}}
+					]}
+				}
+			]
+	}
+
+]
