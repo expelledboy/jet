@@ -34,21 +34,14 @@ match_property(Property, Conditions, Json) when is_map(Conditions) ->
 % match that use one of these operators as a property name
 
 %%% =
-match_condition(<<"=">>, Operand, Value) when is_boolean(Operand), is_boolean(Value) ->
-    Value == Operand;
-match_condition(<<"=">>, Operand, Value) when is_integer(Operand), is_integer(Value) ->
-    Value == Operand;
-match_condition(<<"=">>, Operand, Value) when is_float(Operand), is_float(Value) ->
-    Value == Operand;
-match_condition(<<"=">>, Operand, Value) when is_float(Operand), is_integer(Value) ->
-    Value == Operand;
-match_condition(<<"=">>, Operand, Value) when is_integer(Operand), is_float(Value) ->
-    Value == Operand;
-match_condition(<<"=">>, Operand, Value) when is_binary(Operand), is_binary(Value) ->
-    Value == Operand;
-match_condition(<<"=">>, Operand, Value) when is_list(Operand), is_list(Value) ->
-    Value == Operand;
-match_condition(<<"=">>, Operand, Value) when is_map(Operand), is_map(Value) ->
+match_condition(<<"=">>, Operand, Value) when is_boolean(Operand), is_boolean(Value);
+                                              is_integer(Operand), is_integer(Value);
+                                              is_float(Operand),   is_float(Value);
+                                              is_float(Operand),   is_integer(Value);
+                                              is_integer(Operand), is_float(Value);
+                                              is_binary(Operand),  is_binary(Value);
+                                              is_list(Operand),    is_list(Value);
+                                              is_map(Operand),     is_map(Value) ->
     Value == Operand;
 match_condition(<<"=">>, Operand, Value) when is_integer(Operand), is_binary(Value) ->
     string:length(Value) == Operand;
@@ -56,38 +49,33 @@ match_condition(<<"=">>, Operand, Value) when is_integer(Operand), is_list(Value
     length(Value) == Operand;
 match_condition(<<"=">>, Operand, Value) ->
     throw({operands_not_comparable, <<"=">>, Value, Operand});
+
 %%% !=
 match_condition(<<"!=">>, Operand, Value) ->
     not (match_condition(<<"=">>, Operand, Value));
+
 %%% >
-match_condition(<<">">>, Operand, Value) when is_integer(Operand), is_integer(Value) ->
-    Value > Operand;
-match_condition(<<">">>, Operand, Value) when is_float(Operand), is_float(Value) ->
-    Value > Operand;
-match_condition(<<">">>, Operand, Value) when is_float(Operand), is_integer(Value) ->
-    Value > Operand;
-match_condition(<<">">>, Operand, Value) when is_integer(Operand), is_float(Value) ->
-    Value > Operand;
-match_condition(<<">">>, Operand, Value) when is_binary(Operand), is_binary(Value) ->
-    Value > Operand;
-match_condition(<<">">>, Operand, Value) when is_list(Operand), is_list(Value) ->
+match_condition(<<">">>, Operand, Value) when is_integer(Operand),  is_integer(Value);
+                                              is_float(Operand),    is_float(Value);
+                                              is_float(Operand),    is_integer(Value);
+                                              is_integer(Operand),  is_float(Value);
+                                              is_binary(Operand),   is_binary(Value) ->
+        Value > Operand;
+match_condition(<<">">>, Operand, Value) when is_list(Operand),     is_list(Value) ->
     length(Value) > length(Operand);
-match_condition(<<">">>, Operand, Value) when is_integer(Operand), is_binary(Value) ->
+match_condition(<<">">>, Operand, Value) when is_integer(Operand),  is_binary(Value) ->
     string:length(Value) > Operand;
-match_condition(<<">">>, Operand, Value) when is_integer(Operand), is_list(Value) ->
+match_condition(<<">">>, Operand, Value) when is_integer(Operand),  is_list(Value) ->
     length(Value) > Operand;
 match_condition(<<">">>, Operand, Value) ->
     throw({operands_not_comparable, <<">">>, Value, Operand});
+
 %%% <
-match_condition(<<"<">>, Operand, Value) when is_integer(Operand), is_integer(Value) ->
-    Value < Operand;
-match_condition(<<"<">>, Operand, Value) when is_float(Operand), is_float(Value) ->
-    Value < Operand;
-match_condition(<<"<">>, Operand, Value) when is_float(Operand), is_integer(Value) ->
-    Value < Operand;
-match_condition(<<"<">>, Operand, Value) when is_integer(Operand), is_float(Value) ->
-    Value < Operand;
-match_condition(<<"<">>, Operand, Value) when is_binary(Operand), is_binary(Value) ->
+match_condition(<<"<">>, Operand, Value) when is_integer(Operand),  is_integer(Value);
+                                              is_float(Operand),    is_float(Value);
+                                              is_float(Operand),    is_integer(Value);
+                                              is_integer(Operand),  is_float(Value);
+                                              is_binary(Operand),   is_binary(Value) ->
     Value < Operand;
 match_condition(<<"<">>, Operand, Value) when is_list(Operand), is_list(Value) ->
     length(Value) < length(Operand);
@@ -100,15 +88,19 @@ match_condition(<<"<">>, Operand, Value) ->
 %%% >=
 match_condition(<<">=">>, Operand, Value) ->
     not (match_condition(<<"<">>, Operand, Value));
+
 %%% <=
 match_condition(<<"<=">>, Operand, Value) ->
     not (match_condition(<<">">>, Operand, Value));
+
 %%% in
 match_condition(<<"in">>, Operand, Value) when is_list(Operand) ->
     lists:member(Value, Operand);
+
 %%% has
 match_condition(<<"has">>, Operand, Value) when is_list(Value) ->
     lists:member(Operand, Value);
+
 %%% type
 match_condition(<<"type">>, <<"integer">>, Value) ->
     is_integer(Value);
@@ -122,6 +114,7 @@ match_condition(<<"type">>, <<"object">>, Value) ->
     is_map(Value);
 match_condition(<<"type">>, Operand, _Value) ->
     throw({unknown_type_operand, Operand});
+
 %%% regex
 match_condition(<<"regex">>, Operand, Value) ->
     {ok, MP} = re:compile(Operand),
