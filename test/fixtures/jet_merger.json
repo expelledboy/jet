@@ -1,0 +1,152 @@
+[
+	{
+		"source-object":
+			{
+					"id": 123,
+					"registered":true,
+					"hash": "12345",
+					"details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] },
+					"contacts":
+					[
+							{ "name": "John", "age": 30, "balance": 15000 },
+							{ "name": "Mary", "age": 50, "balance": 20000.50 }
+					]
+			},
+		"merges":
+		[
+			{
+				"description": "merge into empty object",
+				"dest-object": {},
+				"merge-spec": {},
+				"result":
+					{
+						"id": 123,
+						"registered":true,
+						"hash": "12345",
+						"details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] },
+						"contacts":
+						[
+								{ "name": "John", "age": 30, "balance": 15000 },
+								{ "name": "Mary", "age": 50, "balance": 20000.50 }
+						]
+					}
+			},
+			{
+				"description": "replace entire object",
+				"dest-object":
+						{
+							"id": 1,
+							"registered":false,
+							"hash": "23454",
+							"details": { "name": "Pete", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] },
+							"contacts":
+							[
+									{ "name": "Alex", "age": 12, "balance": 15001.0 },
+									{ "name": "Jay", "age": 22, "balance": 5000.50 }
+							]
+						},
+				"merge-spec": {"/": "replace"},
+				"result":
+					{
+						"id": 123,
+						"registered":true,
+						"hash": "12345",
+						"details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] },
+						"contacts":
+						[
+								{ "name": "John", "age": 30, "balance": 15000 },
+								{ "name": "Mary", "age": 50, "balance": 20000.50 }
+						]
+					}
+			},
+			{
+				"description": "append entire object",
+				"dest-object":
+						{
+							"id": 1,
+							"registered":false,
+							"hash": "23454",
+							"details": { "name": "Pete", "age": 25, "balance": 100.05, "new-property": "new value", "numbers": ["1245"] },
+							"contacts":
+							[
+									{ "name": "Alex", "age": 12, "balance": 15001.0 },
+									{ "name": "Jay", "age": 22, "balance": 5000.50 }
+							]
+						},
+				"merge-spec": {"/": "append"},
+				"result":
+					{
+						"id": 1,
+						"registered":false,
+						"hash": "23454",
+						"details": { "name": "Pete", "age": 25, "balance": 100.05, "new-property": "new value", "numbers": ["0712228373", "0112738292","1245"] },
+						"contacts":
+						[
+								{ "name": "Alex", "age": 12, "balance": 15001.0 },
+								{ "name": "Jay", "age": 22, "balance": 5000.50 },
+								{ "name": "John", "age": 30, "balance": 15000 },
+								{ "name": "Mary", "age": 50, "balance": 20000.50 }
+						]
+					}
+			},
+			{
+				"description": "merge entire object",
+				"dest-object":
+						{
+							"id": 1,
+							"registered":false,
+							"hash": "23454",
+							"details": { "name": "Pete", "age": 10, "balance": 1.05, "new-property": "new value", "numbers": ["1245"] },
+							"contacts":
+							[
+									{ "name": "Alex", "age": 12, "balance": 15001.0 },
+									{ "name": "Jay", "age": 22, "balance": 5000.50 }
+							]
+						},
+				"merge-spec": {"/": "merge"},
+				"result":
+					{
+						"id": 123,
+						"registered":true,
+						"hash": "12345",
+						"details": { "name": "Zeus", "age": 25, "balance": 100.05, "new-property": "new value", "numbers": ["0712228373", "0112738292", "1245"] },
+						"contacts":
+						[
+								{ "name": "Alex", "age": 12, "balance": 15001.0 },
+								{ "name": "Jay", "age": 22, "balance": 5000.50 },
+								{ "name": "John", "age": 30, "balance": 15000 },
+								{ "name": "Mary", "age": 50, "balance": 20000.50 }
+						]
+					}
+			},
+			{
+				"description": "mixed merge spec",
+				"dest-object":
+						{
+							"id": 1,
+							"registered":false,
+							"hash": "23454",
+							"details": { "name": "Pete", "age": 10, "new-property": "new value", "numbers": ["1245"] },
+							"contacts":
+							[
+									{ "name": "Alex", "age": 12, "balance": 15001.0 },
+									{ "name": "Jay", "age": 22, "balance": 5000.50 }
+							]
+						},
+				"merge-spec": {"/id": "append", "/contacts": "replace", "/details/numbers": "append"},
+				"result":
+					{
+						"id": 1,
+						"registered":true,
+						"hash": "12345",
+						"details": { "name": "Zeus", "age": 25, "balance": 100.05, "new-property": "new value", "numbers": ["0712228373", "0112738292", "1245"] },
+						"contacts":
+						[
+								{ "name": "John", "age": 30, "balance": 15000 },
+								{ "name": "Mary", "age": 50, "balance": 20000.50 }
+						]
+					}
+			}
+		]
+	}
+]
