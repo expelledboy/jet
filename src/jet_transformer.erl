@@ -66,13 +66,7 @@ get_transform(Transform, Source, ElementSource) when is_map(Transform) ->
             {_, true, _} ->     %"foreach" keyword found
                 for_each(maps:get(<<"foreach">>, Transform), Source);
             {_, _, true} ->     %path keyword found
-                {IsRelative, Pointer} = is_relative_pointer(maps:get(<<"path">>, Transform)),
-                case IsRelative of
-                    true ->
-                        Value = jet_pointer:get_prop_value(Pointer, ElementSource);
-                    false ->
-                        Value = jet_pointer:get_prop_value(Pointer, Source)
-                end,
+                Value = get_transform(maps:get(<<"path">>, Transform), Source, ElementSource),
                 case maps:find(<<"convert">>, Transform) of
                     {ok, Conversion} ->     % "convert" keyword in transform
                         Fun = binary_to_existing_atom(Conversion, unicode),
@@ -93,6 +87,8 @@ get_transform(Transform, Source, ElementSource) when is_binary(Transform) ->
         false ->
             jet_pointer:get_prop_value(Pointer, Source)
     end.
+
+
 
 %%
 %% Utility function to determine whether a Json Pointer is relative,
