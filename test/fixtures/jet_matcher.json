@@ -1,17 +1,17 @@
 [
     {
-        "object": 
+        "object":
         {
             "id": 123,
             "registered":true,
-            "details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] }, 
-            "contacts": 
-            [ 
+            "details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] },
+            "contacts":
+            [
                 { "name": "John", "age": 30, "balance": 15000 },
-                { "name": "Mary", "age": 50, "balance": 20000.50 } 
+                { "name": "Mary", "age": 50, "balance": 20000.50 }
             ]
         },
-        "patterns": 
+        "patterns":
         [
             {
                 "description": "=(integer,integer)",
@@ -179,8 +179,8 @@
                 "result": true
             },
             {
-                "description": "has(list,any)",
-                "pattern": { "/contacts": { "has": { "name": "John", "age": 30, "balance": 15000 } } },
+                "description": "contains(list,any)",
+                "pattern": { "/contacts": { "contains": { "name": "John", "age": 30, "balance": 15000 } } },
                 "result": true
             },
             {
@@ -369,8 +369,8 @@
                 "result": true
             },
             {
-                "description": "has(list,any)",
-                "pattern": { "/contacts": { "has": { "name": "John", "age": 30, "balance": 15000 } } },
+                "description": "contains(list,any)",
+                "pattern": { "/contacts": { "contains": { "name": "John", "age": 30, "balance": 15000 } } },
                 "result": true
             },
             {
@@ -560,8 +560,8 @@
                 "result": true
             },
             {
-                "description": "has(list,any)",
-                "pattern": { "/contacts": { "has": { "name": "John", "age": 30, "balance": 15000 } } },
+                "description": "contains(list,any)",
+                "pattern": { "/contacts": { "contains": { "name": "John", "age": 30, "balance": 15000 } } },
                 "result": true
             },
             {
@@ -750,8 +750,8 @@
                 "result": false
             },
             {
-                "description": "has(list,any) - no match",
-                "pattern": { "/contacts": { "has": { "name": "Alexa", "age": 30, "balance": 15000 } } },
+                "description": "contains(list,any) - no match",
+                "pattern": { "/contacts": { "contains": { "name": "Alexa", "age": 30, "balance": 15000 } } },
                 "result": false
             },
             {
@@ -795,5 +795,5 @@
                 "result": false
             }
         ]
-    }      
+    }
 ]

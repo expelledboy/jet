@@ -12,96 +12,79 @@ match(#{<<"or">> := Ors}, Json) when is_list(Ors) ->
     lists:any(fun (Or) -> match(Or, Json) end, Ors);
 match(#{<<"not">> := Not}, Json) when is_map(Not) ->
     not match(Not, Json);
-% object containing 1..n property clauses
-% treat as if wrapped in implicit 'and'
+
 match(Pattern, Json) when is_map(Pattern) ->
     maps:fold(fun (Property, Conditions, IsMatch) ->
                     IsMatch and match_property(Property, Conditions, Json)
               end, true, Pattern).
 
-% property clause
 match_property(Property, Conditions, Json) when is_map(Conditions) ->
-    %get the first (and only) property name (first key in map)
-    Value1 = jet_pointer:get_prop_value(Property, Json),
-    %get the conditions to iterate through
-    maps:fold(fun (Operator, Value2, IsMatch) ->
-                    IsMatch and match_condition(Operator, Value2, Value1)
+    ValueToCompare = jet_pointer:get(Property, Json),
+    maps:fold(fun (Operator, Comparator, IsMatch) ->
+                    IsMatch and match_condition(Operator, Comparator, ValueToCompare)
               end, true, Conditions).
 
-% These will fail if they aren't children of a property clause
-% because the property clause match() puts the condition atom in
-% a tuple with the value. This is in case there are objects to
-% match that use one of these operators as a property name
+match_condition(<<"=">>, Comparator, Value) when is_boolean(Comparator), is_boolean(Value);
+                                              is_integer(Comparator), is_integer(Value);
+                                              is_float(Comparator),   is_float(Value);
+                                              is_float(Comparator),   is_integer(Value);
+                                              is_integer(Comparator), is_float(Value);
+                                              is_binary(Comparator),  is_binary(Value);
+                                              is_list(Comparator),    is_list(Value);
+                                              is_map(Comparator),     is_map(Value) ->
+    Value == Comparator;
+match_condition(<<"=">>, Comparator, Value) when is_integer(Comparator), is_binary(Value) ->
+    string:length(Value) == Comparator;
+match_condition(<<"=">>, Comparator, Value) when is_integer(Comparator), is_list(Value) ->
+    length(Value) == Comparator;
+match_condition(<<"=">>, Comparator, Value) ->
+    throw({operands_not_comparable, <<"=">>, Value, Comparator});
 
-%%% =
-match_condition(<<"=">>, Operand, Value) when is_boolean(Operand), is_boolean(Value);
-                                              is_integer(Operand), is_integer(Value);
-                                              is_float(Operand),   is_float(Value);
-                                              is_float(Operand),   is_integer(Value);
-                                              is_integer(Operand), is_float(Value);
-                                              is_binary(Operand),  is_binary(Value);
-                                              is_list(Operand),    is_list(Value);
-                                              is_map(Operand),     is_map(Value) ->
-    Value == Operand;
-match_condition(<<"=">>, Operand, Value) when is_integer(Operand), is_binary(Value) ->
-    string:length(Value) == Operand;
-match_condition(<<"=">>, Operand, Value) when is_integer(Operand), is_list(Value) ->
-    length(Value) == Operand;
-match_condition(<<"=">>, Operand, Value) ->
-    throw({operands_not_comparable, <<"=">>, Value, Operand});
+match_condition(<<"!=">>, Comparator, Value) ->
+    not (match_condition(<<"=">>, Comparator, Value));
 
-%%% !=
-match_condition(<<"!=">>, Operand, Value) ->
-    not (match_condition(<<"=">>, Operand, Value));
+match_condition(<<">">>, Comparator, Value) when is_integer(Comparator),  is_integer(Value);
+                                              is_float(Comparator),    is_float(Value);
+                                              is_float(Comparator),    is_integer(Value);
+                                              is_integer(Comparator),  is_float(Value);
+                                              is_binary(Comparator),   is_binary(Value) ->
+    Value > Comparator;
+match_condition(<<">">>, Comparator, Value) when is_list(Comparator),     is_list(Value) ->
+    length(Value) > length(Comparator);
+match_condition(<<">">>, Comparator, Value) when is_integer(Comparator),  is_binary(Value) ->
+    string:length(Value) > Comparator;
+match_condition(<<">">>, Comparator, Value) when is_integer(Comparator),  is_list(Value) ->
+    length(Value) > Comparator;
+match_condition(<<">">>, Comparator, Value) ->
+    throw({operands_not_comparable, <<">">>, Value, Comparator});
 
-%%% >
-match_condition(<<">">>, Operand, Value) when is_integer(Operand),  is_integer(Value);
-                                              is_float(Operand),    is_float(Value);
-                                              is_float(Operand),    is_integer(Value);
-                                              is_integer(Operand),  is_float(Value);
-                                              is_binary(Operand),   is_binary(Value) ->
-        Value > Operand;
-match_condition(<<">">>, Operand, Value) when is_list(Operand),     is_list(Value) ->
-    length(Value) > length(Operand);
-match_condition(<<">">>, Operand, Value) when is_integer(Operand),  is_binary(Value) ->
-    string:length(Value) > Operand;
-match_condition(<<">">>, Operand, Value) when is_integer(Operand),  is_list(Value) ->
-    length(Value) > Operand;
-match_condition(<<">">>, Operand, Value) ->
-    throw({operands_not_comparable, <<">">>, Value, Operand});
+match_condition(<<"<">>, Comparator, Value) when is_integer(Comparator),  is_integer(Value);
+                                              is_float(Comparator),    is_float(Value);
+                                              is_float(Comparator),    is_integer(Value);
+                                              is_integer(Comparator),  is_float(Value);
+                                              is_binary(Comparator),   is_binary(Value) ->
+    Value < Comparator;
+match_condition(<<"<">>, Comparator, Value) when is_list(Comparator),     is_list(Value) ->
+    length(Value) < length(Comparator);
+match_condition(<<"<">>, Comparator, Value) when is_integer(Comparator),  is_binary(Value) ->
+    string:length(Value) < Comparator;
+match_condition(<<"<">>, Comparator, Value) when is_integer(Comparator),  is_list(Value) ->
+    length(Value) < Comparator;
+match_condition(<<"<">>, Comparator, Value) ->
+    throw({operands_not_comparable, <<"<">>, Value, Comparator});
 
-%%% <
-match_condition(<<"<">>, Operand, Value) when is_integer(Operand),  is_integer(Value);
-                                              is_float(Operand),    is_float(Value);
-                                              is_float(Operand),    is_integer(Value);
-                                              is_integer(Operand),  is_float(Value);
-                                              is_binary(Operand),   is_binary(Value) ->
-    Value < Operand;
-match_condition(<<"<">>, Operand, Value) when is_list(Operand), is_list(Value) ->
-    length(Value) < length(Operand);
-match_condition(<<"<">>, Operand, Value) when is_integer(Operand), is_binary(Value) ->
-    string:length(Value) < Operand;
-match_condition(<<"<">>, Operand, Value) when is_integer(Operand), is_list(Value) ->
-    length(Value) < Operand;
-match_condition(<<"<">>, Operand, Value) ->
-    throw({operands_not_comparable, <<"<">>, Value, Operand});
-%%% >=
-match_condition(<<">=">>, Operand, Value) ->
-    not (match_condition(<<"<">>, Operand, Value));
+match_condition(<<">=">>, Comparator, Value) ->
+    not (match_condition(<<"<">>, Comparator, Value));
 
-%%% <=
-match_condition(<<"<=">>, Operand, Value) ->
-    not (match_condition(<<">">>, Operand, Value));
+match_condition(<<"<=">>, Comparator, Value) ->
+    not (match_condition(<<">">>, Comparator, Value));
 
-%%% in
-match_condition(<<"in">>, Operand, Value) when is_list(Operand) ->
-    lists:member(Value, Operand);
+match_condition(<<"in">>, Comparator, Value) when is_list(Comparator) ->
+    lists:member(Value, Comparator);
 
-%%% has
-match_condition(<<"has">>, Operand, Value) when is_list(Value) ->
-    lists:member(Operand, Value);
+match_condition(<<"contains">>, Comparator, Value) when is_list(Value) ->
+    lists:member(Comparator, Value);
 
-%%% type
 match_condition(<<"type">>, <<"integer">>, Value) ->
     is_integer(Value);
 match_condition(<<"type">>, <<"float">>, Value) ->
@@ -112,10 +95,9 @@ match_condition(<<"type">>, <<"array">>, Value) ->
     is_list(Value);
 match_condition(<<"type">>, <<"object">>, Value) ->
     is_map(Value);
-match_condition(<<"type">>, Operand, _Value) ->
-    throw({unknown_type_operand, Operand});
+match_condition(<<"type">>, Type, _Value) ->
+    throw({unknown_type, Type});
 
-%%% regex
-match_condition(<<"regex">>, Operand, Value) ->
-    {ok, MP} = re:compile(Operand),
-    re:run(Value, MP) == {ok, match}.
+match_condition(<<"regex">>, Comparator, Value) ->
+    {ok, MP} = re:compile(Comparator),
+    {ok, match} == re:run(Value, MP).

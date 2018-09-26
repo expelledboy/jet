@@ -22,7 +22,7 @@ gen_pointer_tests(Path) ->
                             <<"path">> := Pointer,
                             <<"result">> := Expected }) ->
                         {Description,
-                        ?_assertEqual(Expected, ((?MOD):get_prop_value(Pointer, Object)))}
+                        ?_assertEqual(Expected, ((?MOD):get(Pointer, Object)))}
                     end, Pointers);
          <<"add">> ->
             Objects = maps:get(<<"objects">>, Path),
@@ -34,7 +34,7 @@ gen_pointer_tests(Path) ->
     end.
 
 %%
-%% The jet_pointer function add_prop_value takes a supplied object and adds
+%% The jet_pointer function put takes a supplied object and adds
 %% both the property specified and it's value to the object, creating or updating any nested
 %% properties required if a deep path to the property is supplied (e.g /details/age)
 %% It is mainly used by the transformer and merge code to create new objects iteratively
@@ -46,7 +46,7 @@ create_object(Properties) ->
         fun(Property, Map) ->
             Path = maps:get(<<"path">>, Property),
             Value = maps:get(<<"value">>, Property),
-            (?MOD):add_prop_value(Path, Value, Map)
+            (?MOD):put(Path, Value, Map)
         end,
         maps:new(),
         Properties).
