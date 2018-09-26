@@ -1,152 +1,124 @@
 [
-	{
-		"source-object":
-			{
-					"id": 123,
-					"registered":true,
-					"hash": "12345",
-					"details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] },
-					"contacts":
-					[
-							{ "name": "John", "age": 30, "balance": 15000 },
-							{ "name": "Mary", "age": 50, "balance": 20000.50 }
-					]
-			},
-		"merges":
-		[
-			{
-				"description": "merge into empty object",
-				"dest-object": {},
-				"merge-spec": {},
-				"result":
-					{
-						"id": 123,
-						"registered":true,
-						"hash": "12345",
-						"details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] },
-						"contacts":
-						[
-								{ "name": "John", "age": 30, "balance": 15000 },
-								{ "name": "Mary", "age": 50, "balance": 20000.50 }
-						]
-					}
-			},
-			{
-				"description": "replace entire object",
-				"dest-object":
-						{
-							"id": 1,
-							"registered":false,
-							"hash": "23454",
-							"details": { "name": "Pete", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] },
-							"contacts":
-							[
-									{ "name": "Alex", "age": 12, "balance": 15001.0 },
-									{ "name": "Jay", "age": 22, "balance": 5000.50 }
-							]
-						},
-				"merge-spec": {"/": "replace"},
-				"result":
-					{
-						"id": 123,
-						"registered":true,
-						"hash": "12345",
-						"details": { "name": "Zeus", "age": 25, "balance": 100.05, "numbers": ["0712228373", "0112738292"] },
-						"contacts":
-						[
-								{ "name": "John", "age": 30, "balance": 15000 },
-								{ "name": "Mary", "age": 50, "balance": 20000.50 }
-						]
-					}
-			},
-			{
-				"description": "append entire object",
-				"dest-object":
-						{
-							"id": 1,
-							"registered":false,
-							"hash": "23454",
-							"details": { "name": "Pete", "age": 25, "balance": 100.05, "new-property": "new value", "numbers": ["1245"] },
-							"contacts":
-							[
-									{ "name": "Alex", "age": 12, "balance": 15001.0 },
-									{ "name": "Jay", "age": 22, "balance": 5000.50 }
-							]
-						},
-				"merge-spec": {"/": "append"},
-				"result":
-					{
-						"id": 1,
-						"registered":false,
-						"hash": "23454",
-						"details": { "name": "Pete", "age": 25, "balance": 100.05, "new-property": "new value", "numbers": ["0712228373", "0112738292","1245"] },
-						"contacts":
-						[
-								{ "name": "Alex", "age": 12, "balance": 15001.0 },
-								{ "name": "Jay", "age": 22, "balance": 5000.50 },
-								{ "name": "John", "age": 30, "balance": 15000 },
-								{ "name": "Mary", "age": 50, "balance": 20000.50 }
-						]
-					}
-			},
-			{
-				"description": "merge entire object",
-				"dest-object":
-						{
-							"id": 1,
-							"registered":false,
-							"hash": "23454",
-							"details": { "name": "Pete", "age": 10, "balance": 1.05, "new-property": "new value", "numbers": ["1245"] },
-							"contacts":
-							[
-									{ "name": "Alex", "age": 12, "balance": 15001.0 },
-									{ "name": "Jay", "age": 22, "balance": 5000.50 }
-							]
-						},
-				"merge-spec": {"/": "merge"},
-				"result":
-					{
-						"id": 123,
-						"registered":true,
-						"hash": "12345",
-						"details": { "name": "Zeus", "age": 25, "balance": 100.05, "new-property": "new value", "numbers": ["0712228373", "0112738292", "1245"] },
-						"contacts":
-						[
-								{ "name": "Alex", "age": 12, "balance": 15001.0 },
-								{ "name": "Jay", "age": 22, "balance": 5000.50 },
-								{ "name": "John", "age": 30, "balance": 15000 },
-								{ "name": "Mary", "age": 50, "balance": 20000.50 }
-						]
-					}
-			},
-			{
-				"description": "mixed merge spec",
-				"dest-object":
-						{
-							"id": 1,
-							"registered":false,
-							"hash": "23454",
-							"details": { "name": "Pete", "age": 10, "new-property": "new value", "numbers": ["1245"] },
-							"contacts":
-							[
-									{ "name": "Alex", "age": 12, "balance": 15001.0 },
-									{ "name": "Jay", "age": 22, "balance": 5000.50 }
-							]
-						},
-				"merge-spec": {"/id": "append", "/contacts": "replace", "/details/numbers": "append"},
-				"result":
-					{
-						"id": 1,
-						"registered":true,
-						"hash": "12345",
-						"details": { "name": "Zeus", "age": 25, "balance": 100.05, "new-property": "new value", "numbers": ["0712228373", "0112738292", "1245"] },
-						"contacts":
-						[
-								{ "name": "John", "age": 30, "balance": 15000 },
-								{ "name": "Mary", "age": 50, "balance": 20000.50 }
-						]
-					}
-			}
-		]
-	}
+  {
+    "source-object": [1],
+    "merges":
+    [
+      {
+        "description": "append lists",
+        "dest-object": [2],
+        "merge-spec": {"/": "append"},
+        "result": [1,2]
+      },
+      {
+        "description": "replace lists",
+        "dest-object": [2],
+        "merge-spec": {"/": "replace"},
+        "result": [1]
+      },
+      {
+        "description": "merge lists",
+        "dest-object": [2],
+        "merge-spec": {"/": "merge"},
+        "result": [1,2]
+      }
+    ]
+  },
+  {
+    "source-object": {"a": true},
+    "merges":
+    [
+      {
+        "description": "append objects",
+        "dest-object": {"b": true},
+        "merge-spec": {"/": "append"},
+        "result": {"a": true, "b": true}
+      },
+      {
+        "description": "replace objects",
+        "dest-object": {"b": true},
+        "merge-spec": {"/": "replace"},
+        "result": {"a": true}
+      },
+      {
+        "description": "merge objects",
+        "dest-object": {"a": false, "b": true},
+        "merge-spec": {"/": "merge"},
+        "result": {"a": true, "b": true}
+      }
+    ]
+  },
+  {
+    "source-object": {"a": {"c": true, "e": true}, "b": true},
+    "merges":
+    [
+      {
+        "description": "append nested objects",
+        "dest-object": {"a": {"d": true, "e": false}, "b": false, "f": true},
+        "merge-spec": {"/": "append"},
+        "result": {"a": {"c": true, "d": true, "e": false}, "b": false, "f": true}
+      },
+      {
+        "description": "replace nested objects",
+        "dest-object": {"a": {"d": true, "e": false}, "b": false, "f": true},
+        "merge-spec": {"/a": "replace"},
+        "result": {"a": {"c": true, "e": true}, "b": true, "f": true}
+      },
+      {
+        "description": "merge nested objects",
+        "dest-object": {"a": {"d": true, "e": false}, "b": false, "f": true},
+        "merge-spec": {"/a": "merge"},
+        "result": {"a": {"c": true, "d": true, "e": true}, "b": true, "f": true}
+      }
+    ]
+  },
+  {
+    "source-object": {
+      "nested": {
+        "nested": {
+          "a": true,
+          "b": [1],
+          "c": [1],
+          "d": {"e": true, "f": false},
+          "g": {"j": true, "k": false}
+        }
+      }
+    },
+    "merges":
+    [
+      {
+        "description": "append nested objects",
+        "dest-object": {
+          "nested": {
+            "x": true,
+            "nested": {
+              "a": false,
+              "b": [2],
+              "c": [2],
+              "d": {"e": false},
+              "g": {"j": false, "l": true}
+            }
+          }
+        },
+        "merge-spec": {
+          "/nested/nested/a": "append",
+          "/nested/nested/b": "replace",
+          "/nested/nested/c": "append",
+          "/nested/nested/d": "append",
+          "/nested/nested/g": "merge"
+        },
+        "result": {
+          "nested": {
+            "x": true,
+            "nested": {
+              "a": false,
+              "b": [1],
+              "c": [1,2],
+              "d": {"e": false, "f": false},
+              "g": {"j": true, "k": false, "l": true}
+            }
+          }
+        }
+      }
+    ]
+  }
 ]

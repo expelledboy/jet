@@ -11,6 +11,7 @@
          to_list/1,
          to_integer/1,
          to_bitstring/1,
+         to_string/1,
          % to_tuple/1,
          % to_binary/1,
          % to_boolean/1,
@@ -95,3 +96,9 @@ to_float(Value) when is_list(Value) ->
 to_float(Value) when is_atom(Value)     -> to_float(atom_to_list(Value));
 to_float(Value) when is_integer(Value)  -> to_float(Value+0.0);
 to_float(Value) when is_float(Value) -> Value.
+
+%% ===================================================================
+%% Aliases
+%% ===================================================================
+
+to_string(Value) -> to_bitstring(Value).
