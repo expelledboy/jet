@@ -12,7 +12,6 @@ transform(Transform, Source) when is_map(Transform) ->
 %% --
 
 transform_map(Transform, Source, ElementSource) when is_map(Transform) ->
-    %% XXX we distinguish relative paths with the ElementSource
     maps:fold(fun(Property, PropertyTransform, NewMap) ->
                       Value = do_transform(PropertyTransform, Source, ElementSource),
                       jet_pointer:put(Property, Value, NewMap)
@@ -21,6 +20,7 @@ transform_map(Transform, Source, ElementSource) when is_map(Transform) ->
 %% --
 
 do_transform(Transform, Source, ElementSource) when is_binary(Transform) ->
+    %% XXX we distinguish relative paths with the ElementSource
     case is_relative_pointer(Transform) of
         {true, Pointer} -> jet_pointer:get(Pointer, ElementSource);
         {false, Pointer} -> jet_pointer:get(Pointer, Source)
@@ -37,17 +37,17 @@ do_transform(#{ <<"properties">> := PropTransforms }, Source, ElementSource) ->
     transform_map(PropTransforms, Source, ElementSource);
 do_transform(#{ <<"path">> := Path } = Transform, Source, ElementSource) ->
     Value0 = do_transform(Path, Source, ElementSource),
-    do_convertion(Value0, Transform).
+    do_function(Value0, Transform).
 
 %% --
 
-do_convertion(Value, #{ <<"convert">> := Conversion }) ->
+do_function(Value, #{ <<"transform">> := Conversion }) ->
     Fun = binary_to_existing_atom(Conversion, unicode),
-    case erlang:function_exported(type, Fun, 1) of
-        true -> type:Fun(Value);
+    case erlang:function_exported(jet_functions, Fun, 1) of
+        true -> jet_functions:Fun(Value);
         false -> throw({conversion_not_supported, Conversion})
     end;
-do_convertion(Value, _Transform) ->
+do_function(Value, _Transform) ->
     Value.
 
 %% --

@@ -1,4 +1,4 @@
--module(type).
+-module(jet_functions).
 
 -export([
          which/1,
@@ -7,24 +7,25 @@
          to_integer/1,
          to_bitstring/1,
          to_string/1,
-         to_float/1
+         to_float/1,
+         length/1
         ]).
 
 %% API
 
 %% order from most likely
-which(Value) when is_boolean(Value)   -> boolean;
-which(Value) when is_atom(Value)      -> atom;
-which(Value) when is_list(Value)      -> list;
-which(Value) when is_integer(Value)   -> integer;
-which(Value) when is_tuple(Value)     -> tuple;
-which(Value) when is_binary(Value)    -> binary;
-which(Value) when is_float(Value)     -> float;
-which(Value) when is_pid(Value)       -> pid;
-which(Value) when is_function(Value)  -> function;
-which(Value) when is_port(Value)      -> port;
-which(Value) when is_bitstring(Value) -> bitstring;
-which(Value) when is_reference(Value) -> reference.
+which(Value) when is_boolean(Value)   -> "boolean";
+which(Value) when is_atom(Value)      -> "atom";
+which(Value) when is_list(Value)      -> "list";
+which(Value) when is_integer(Value)   -> "integer";
+which(Value) when is_tuple(Value)     -> "tuple";
+which(Value) when is_binary(Value)    -> "binary";
+which(Value) when is_float(Value)     -> "float";
+which(Value) when is_pid(Value)       -> "pid";
+which(Value) when is_function(Value)  -> "function";
+which(Value) when is_port(Value)      -> "port";
+which(Value) when is_bitstring(Value) -> "bitstring";
+which(Value) when is_reference(Value) -> "reference".
 
 %% --
 
@@ -76,5 +77,8 @@ to_float(Value) when is_integer(Value)  -> to_float(Value+0.0);
 to_float(Value) when is_float(Value) -> Value.
 
 %% -- aliases
-
 to_string(Value) -> to_bitstring(Value).
+
+%% -- aliases
+length(Value) when is_binary(Value) -> string:length(Value);
+length(Value) when is_list(Value) -> erlang:length(Value).
