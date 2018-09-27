@@ -13,3 +13,7 @@ trim_trailing_whitespace = true
 [*.{erl,src,hrl}]
 indent_style = space
 indent_size = 4
+
+[*.json]
+indent_style = space
+indent_size = 2

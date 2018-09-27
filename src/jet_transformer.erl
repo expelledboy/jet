@@ -6,90 +6,56 @@
 -compile(export_all).
 -endif.
 
-%%
-%% Exported transform function
-%%
-
-%% Exported transform() has an arity of 2 but internal functions
-%% have an arity of 3 because they may be called from a "foreach"
-%% in which case they must distinguish between relative paths within
-%% the source array element being processed (ElementSource) or
-%% absolute paths within the whole source Json object (Source)
-
 transform(Transform, Source) when is_map(Transform) ->
     transform_map(Transform, Source, no_element).
 
+%% --
+
 transform_map(Transform, Source, ElementSource) when is_map(Transform) ->
-    maps:fold(
-            fun(Property, PropertyTransform, NewMap) ->
-                jet_pointer:put(Property,
-                    do_transform(PropertyTransform, Source, ElementSource),
-                    NewMap)
-            end,
-            #{},
-            Transform).
+    %% XXX we distinguish relative paths with the ElementSource
+    maps:fold(fun(Property, PropertyTransform, NewMap) ->
+                      Value = do_transform(PropertyTransform, Source, ElementSource),
+                      jet_pointer:put(Property, Value, NewMap)
+              end, #{}, Transform).
 
-do_transform(Transform, Source, ElementSource) when is_map(Transform) ->
-    %
-    %  Keywords
-    %
-    % "properties" - Treat map value of destination property as top level transform,
-    %                i.e. keys in map are destination properties of object value,
-    %                not transform keywords
-    % "foreach"    - Perform a transform on each element of a source array to
-    %                produce elements in a destination array. Must be followed by
-    %                "properties" keyword
-    % "path"       - Currently used exclusively when we want to use a "convert"
-    %                keyword, because a simple path string after a dest property in
-    %                the transform is always treated as a pointer.
-    %                When we want to convert values, we have to specify both
-    %                a pointer "path" property and a "convert" property
-    % "convert"    - Convert to a given format
-    %
+%% --
 
-    case {maps:get(<<"properties">>, Transform, false),
-          maps:get(<<"foreach">>, Transform, false),
-          maps:get(<<"path">>, Transform, false),
-          maps:get(<<"convert">>, Transform, false)} of
-            {PropTransforms, false, false, false} when PropTransforms /= false ->
-                transform_map(PropTransforms, Source, ElementSource);
-            {PropTransforms, Foreach, false, false}
-                when PropTransforms /= false, Foreach /= false  ->
-                for_each(Foreach, PropTransforms, Source);
-            {false, false, Path, Conversion} when Path /= false, Conversion /= false ->
-                Value = do_transform(Path, Source, ElementSource),
-                Fun = binary_to_existing_atom(Conversion, unicode),
-                type:Fun(Value);
-            {false, false, Path, false} when Path /= false ->
-                do_transform(Path, Source, ElementSource);
-            {false, false, false, false} ->
-                throw({missing_transform_keywords, Transform})
-    end;
 do_transform(Transform, Source, ElementSource) when is_binary(Transform) ->
-    {IsRelative, Pointer} = is_relative_pointer(Transform),
-    case IsRelative of
-        true ->
-            jet_pointer:get(Pointer, ElementSource);
-        false ->
-            jet_pointer:get(Pointer, Source)
-    end.
+    case is_relative_pointer(Transform) of
+        {true, Pointer} -> jet_pointer:get(Pointer, ElementSource);
+        {false, Pointer} -> jet_pointer:get(Pointer, Source)
+    end;
+
+do_transform(#{ <<"foreach">> := ArrayPointer,
+                <<"properties">> := PropTransforms },
+             Source, _ElementSource) ->
+    SourceArray = jet_pointer:get(ArrayPointer, Source),
+    lists:map(fun(ElementSource) ->
+                      transform_map(PropTransforms, Source, ElementSource)
+              end, SourceArray);
+do_transform(#{ <<"properties">> := PropTransforms }, Source, ElementSource) ->
+    transform_map(PropTransforms, Source, ElementSource);
+do_transform(#{ <<"path">> := Path } = Transform, Source, ElementSource) ->
+    Value0 = do_transform(Path, Source, ElementSource),
+    do_convertion(Value0, Transform).
+
+%% --
+
+do_convertion(Value, #{ <<"convert">> := Conversion }) ->
+    Fun = binary_to_existing_atom(Conversion, unicode),
+    case erlang:function_exported(type, Fun, 1) of
+        true -> type:Fun(Value);
+        false -> throw({conversion_not_supported, Conversion})
+    end;
+do_convertion(Value, _Transform) ->
+    Value.
+
+%% --
 
 is_relative_pointer(Pointer) ->
     [Prefix|Path] = string:split(Pointer, <<"/">>, leading),
     case Prefix of
-        <<"0">> ->
-            {true, unicode:characters_to_binary([<<"/">>, Path], unicode)};
-        _ ->
-            {false, Pointer}
+        <<"0">> -> {true, unicode:characters_to_binary([<<"/">>, Path], unicode)};
+        _ -> {false, Pointer}
     end.
-
-for_each (ArrayPointer, PropertyTransforms, Source) when is_binary(ArrayPointer),
-                                                         is_map(PropertyTransforms) ->
-    SourceArray=jet_pointer:get(
-        ArrayPointer,
-        Source),
-    lists:map(fun(ElementSource) ->
-            transform_map(PropertyTransforms, Source, ElementSource)
-        end,
-        SourceArray).
 
