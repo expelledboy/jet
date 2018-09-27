@@ -37,8 +37,8 @@
         "description": "to flat object with conversion transforms",
         "transform": {
           "/name": "/details/name",
-          "/age": {"path": "/details/age", "convert": "to_string"},
-          "/hash-int":{"path": "/hash", "convert": "to_integer"}
+          "/age": {"path": "/details/age", "transform": "to_string"},
+          "/hash-int":{"path": "/hash", "transform": "to_integer"}
         },
         "result": {
           "name": "Zeus",
@@ -93,7 +93,7 @@
               "/person": {
                 "properties": {
                   "name": "0/name",
-                  "/age": {"path": "0/age", "convert": "to_string"}
+                  "/age": {"path": "0/age", "transform": "to_string"}
                 }
               }
             }
@@ -106,6 +106,17 @@
             { "id": 123, "person": {"name": "John", "age": "30"}},
             { "id": 123, "person": {"name": "Mary", "age": "50"}}
           ]
+        }
+      },
+      {
+        "description": "string/array length transform test",
+        "transform": {
+          "/name-length": {"path": "/details/name", "transform": "length"},
+          "/contact-count": { "path": "/contacts", "transform": "length"}
+        },
+        "result": {
+          "name-length": 4,
+          "contact-count": 2
         }
       }
     ]
