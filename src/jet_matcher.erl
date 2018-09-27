@@ -25,13 +25,13 @@ match_property(Property, Conditions, Json) when is_map(Conditions) ->
               end, true, Conditions).
 
 match_condition(<<"=">>, Comparator, Value) when is_boolean(Comparator), is_boolean(Value);
-                                              is_integer(Comparator), is_integer(Value);
-                                              is_float(Comparator),   is_float(Value);
-                                              is_float(Comparator),   is_integer(Value);
-                                              is_integer(Comparator), is_float(Value);
-                                              is_binary(Comparator),  is_binary(Value);
-                                              is_list(Comparator),    is_list(Value);
-                                              is_map(Comparator),     is_map(Value) ->
+                                                 is_integer(Comparator), is_integer(Value);
+                                                 is_float(Comparator),   is_float(Value);
+                                                 is_float(Comparator),   is_integer(Value);
+                                                 is_integer(Comparator), is_float(Value);
+                                                 is_binary(Comparator),  is_binary(Value);
+                                                 is_list(Comparator),    is_list(Value);
+                                                 is_map(Comparator),     is_map(Value) ->
     Value == Comparator;
 match_condition(<<"=">>, Comparator, Value) when is_integer(Comparator), is_binary(Value) ->
     string:length(Value) == Comparator;
@@ -44,10 +44,10 @@ match_condition(<<"!=">>, Comparator, Value) ->
     not (match_condition(<<"=">>, Comparator, Value));
 
 match_condition(<<">">>, Comparator, Value) when is_integer(Comparator),  is_integer(Value);
-                                              is_float(Comparator),    is_float(Value);
-                                              is_float(Comparator),    is_integer(Value);
-                                              is_integer(Comparator),  is_float(Value);
-                                              is_binary(Comparator),   is_binary(Value) ->
+                                                 is_float(Comparator),    is_float(Value);
+                                                 is_float(Comparator),    is_integer(Value);
+                                                 is_integer(Comparator),  is_float(Value);
+                                                 is_binary(Comparator),   is_binary(Value) ->
     Value > Comparator;
 match_condition(<<">">>, Comparator, Value) when is_list(Comparator),     is_list(Value) ->
     length(Value) > length(Comparator);
@@ -59,10 +59,10 @@ match_condition(<<">">>, Comparator, Value) ->
     throw({operands_not_comparable, <<">">>, Value, Comparator});
 
 match_condition(<<"<">>, Comparator, Value) when is_integer(Comparator),  is_integer(Value);
-                                              is_float(Comparator),    is_float(Value);
-                                              is_float(Comparator),    is_integer(Value);
-                                              is_integer(Comparator),  is_float(Value);
-                                              is_binary(Comparator),   is_binary(Value) ->
+                                                 is_float(Comparator),    is_float(Value);
+                                                 is_float(Comparator),    is_integer(Value);
+                                                 is_integer(Comparator),  is_float(Value);
+                                                 is_binary(Comparator),   is_binary(Value) ->
     Value < Comparator;
 match_condition(<<"<">>, Comparator, Value) when is_list(Comparator),     is_list(Value) ->
     length(Value) < length(Comparator);
