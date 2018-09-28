@@ -30,6 +30,15 @@ get([Key | Path], Json) when is_list(Json) ->
 get([], Value) ->
     Value.
 
+get(PathString, Json, Default) when is_binary(PathString) ->
+    Value = get(PathString,Json),
+    case Value of
+        undefined ->
+            Default;
+        _ ->
+            Value
+    end.
+
 put(PathString, Value, Map) when is_binary(PathString) ->
     put(string:lexemes(PathString, "/"), Value, Map);
 
