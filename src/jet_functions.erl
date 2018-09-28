@@ -13,19 +13,9 @@
 
 %% API
 
-%% order from most likely
-which(Value) when is_boolean(Value)   -> "boolean";
-which(Value) when is_atom(Value)      -> "atom";
-which(Value) when is_list(Value)      -> "list";
-which(Value) when is_integer(Value)   -> "integer";
-which(Value) when is_tuple(Value)     -> "tuple";
-which(Value) when is_binary(Value)    -> "binary";
-which(Value) when is_float(Value)     -> "float";
-which(Value) when is_pid(Value)       -> "pid";
-which(Value) when is_function(Value)  -> "function";
-which(Value) when is_port(Value)      -> "port";
-which(Value) when is_bitstring(Value) -> "bitstring";
-which(Value) when is_reference(Value) -> "reference".
+%% --
+length(Value) when is_binary(Value) -> string:length(Value);
+length(Value) when is_list(Value) -> erlang:length(Value).
 
 %% --
 
@@ -78,7 +68,3 @@ to_float(Value) when is_float(Value) -> Value.
 
 %% -- aliases
 to_string(Value) -> to_bitstring(Value).
-
-%% -- aliases
-length(Value) when is_binary(Value) -> string:length(Value);
-length(Value) when is_list(Value) -> erlang:length(Value).
