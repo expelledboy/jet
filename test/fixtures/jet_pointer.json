@@ -40,6 +40,23 @@
     ]
   },
   {
+    "test-type": "get-default",
+    "object":
+    {
+      "x": 123,
+      "y": {
+        "z": "abc"
+      }
+    },
+    "pointers": [
+      {
+        "description": "get with default",
+        "path": "/y/q",
+        "result": 123
+      }
+    ]
+  },
+  {
     "test-type": "get",
     "object": [
       {

@@ -1,6 +1,6 @@
 -module(jet_pointer).
 
--export([get/2, put/3]).
+-export([get/2, get/3, put/3]).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -8,13 +8,14 @@
 -compile(export_all).
 -endif.
 
-get(PathString, Json) when is_binary(PathString)->
+get(PathString, Json) when is_binary(PathString) ->
     get(string:lexemes(PathString, "/"), Json);
 
 get([Key | Path], Json) when is_map(Json) ->
     case maps:find(Key, Json) of
         {ok, Value} -> get(Path, Value);
-        error -> undefined
+        error ->
+            undefined
     end;
 get([Key | Path], Json) when is_list(Json) ->
     case string:to_integer(Key) of
@@ -27,7 +28,9 @@ get([Key | Path], Json) when is_list(Json) ->
             Value = lists:nth(Index+1, Json),
             get(Path, Value)
     end;
-get([], Value) ->
+get([_Key | Path], _Json) when is_list(Path), erlang:length(Path) == 0 ->
+        undefined;
+get(_Key, Value) ->
     Value.
 
 get(PathString, Json, Default) when is_binary(PathString) ->
