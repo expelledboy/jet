@@ -23,6 +23,15 @@ gen_pointer_tests(Path) ->
                               {Description,
                                ?_assertEqual(Expected, ((?MOD):get(Pointer, Object)))}
                       end, Pointers);
+        <<"get-default">> ->
+            Object = maps:get(<<"object">>, Path),
+            Pointers = maps:get(<<"pointers">>, Path),
+            lists:map(fun(#{ <<"description">> := Description,
+                             <<"path">> := Pointer,
+                             <<"result">> := Expected}) ->
+                              {Description,
+                               ?_assertEqual(Expected, ((?MOD):get(Pointer, Object, Expected)))}
+                      end, Pointers);
         <<"add">> ->
             Objects = maps:get(<<"objects">>, Path),
             lists:map(fun(#{<<"description">> := Description,
