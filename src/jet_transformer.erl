@@ -37,15 +37,27 @@ do_transform(#{ <<"properties">> := PropTransforms }, Source, ElementSource) ->
     transform_map(PropTransforms, Source, ElementSource);
 do_transform(#{ <<"path">> := Path } = Transform, Source, ElementSource) ->
     Value0 = do_transform(Path, Source, ElementSource),
-    do_function(Value0, Transform).
-
+    case (Value0==undefined) of
+        true ->
+            case (maps:get(<<"default">>,Transform)) of
+                {badkey,<<"default">>} ->
+                    Value1 = Value0;
+                Default ->
+                    Value1 = Default
+            end,
+            do_function(Value1, Transform);
+        false ->
+            do_function(Value0, Transform)
+    end;
+do_transform(#{ <<"default">> := Default } = Transform, _Source, _ElementSource) ->
+    do_function(Default, Transform).
 %% --
 
-do_function(Value, #{ <<"transform">> := Conversion }) ->
-    Fun = binary_to_existing_atom(Conversion, unicode),
+do_function(Value, #{ <<"transform">> := Function }) ->
+    Fun = binary_to_existing_atom(Function, unicode),
     case erlang:function_exported(jet_functions, Fun, 1) of
         true -> jet_functions:Fun(Value);
-        false -> throw({conversion_not_supported, Conversion})
+        false -> throw({conversion_not_supported, Function})
     end;
 do_function(Value, _Transform) ->
     Value.
