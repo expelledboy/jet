@@ -118,6 +118,26 @@
           "name-length": 4,
           "contact-count": 2
         }
+      },
+      {
+        "description": "transforms with defaults",
+        "transform": {
+          "/name": "/details/name",
+          "/age": { "path": "/details/age", "default": 4 },
+          "/arbitrary1": {"path": "/arbitrary1", "default": "foo"},
+          "/arbitrary2": {"default": "bar"},
+          "/contacts": "/contacts"
+        },
+        "result": {
+          "name": "Zeus",
+          "age": 25,
+          "arbitrary1": "foo",
+          "arbitrary2": "bar",
+          "contacts": [
+            { "name": "John", "age": 30, "balance": 15000 },
+            { "name": "Mary", "age": 50, "balance": 20000.50 }
+          ]
+        }
       }
     ]
   }
