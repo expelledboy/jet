@@ -35,6 +35,10 @@ do_transform(#{ <<"foreach">> := ArrayPointer,
               end, SourceArray);
 do_transform(#{ <<"properties">> := PropTransforms }, Source, ElementSource) ->
     transform_map(PropTransforms, Source, ElementSource);
+do_transform(#{ <<"case">> := Case}, Source, ElementSource) when is_list(Case)->
+    do_case(Case, Source, ElementSource);
+do_transform(#{ <<"case">> := _Case}, _Source, _ElementSource) ->
+    undefined;
 do_transform(#{ <<"path">> := Path } = Transform, Source, ElementSource) ->
     Value0 = do_transform(Path, Source, ElementSource),
     case (Value0==undefined) of
@@ -50,7 +54,9 @@ do_transform(#{ <<"path">> := Path } = Transform, Source, ElementSource) ->
             do_function(Value0, Transform)
     end;
 do_transform(#{ <<"default">> := Default } = Transform, _Source, _ElementSource) ->
-    do_function(Default, Transform).
+    do_function(Default, Transform);
+do_transform(Value,Source,ElementSource) ->
+    Value.
 %% --
 
 do_function(Value, #{ <<"transform">> := Function }) ->
@@ -62,6 +68,17 @@ do_function(Value, #{ <<"transform">> := Function }) ->
 do_function(Value, _Transform) ->
     Value.
 
+do_case([#{<<"pattern">> := Pattern, <<"value">> := Value}| Tail], Source, ElementSource) ->
+    case (jet_matcher:match(Pattern,Source)) of
+        true ->
+            do_transform(Value, Source, ElementSource);
+        false ->
+            do_case(Tail,Source,ElementSource)
+    end;
+do_case([#{<<"value">> := Value}| _Tail], Source, ElementSource) ->
+    do_transform(Value, Source, ElementSource);
+do_case([], _Source, _ElementSource) ->
+    undefined.
 %% --
 
 is_relative_pointer(Pointer) ->

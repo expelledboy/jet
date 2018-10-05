@@ -138,6 +138,36 @@
             { "name": "Mary", "age": 50, "balance": 20000.50 }
           ]
         }
+      },
+      {
+        "description": "transform with pattern",
+        "transform": {
+          "/result1": {
+            "case": [
+              {
+                "pattern": {
+                  "/details/name": {"in": ["Zeus","Paul"]},
+                  "/details/age": {">": 24, "<": 30}
+                },
+                "value": true
+              },
+              {"value": false}
+            ]
+          },
+          "/result2": {
+            "case": [
+              {
+                "pattern": {"/contacts/0/age": {"<=": 0}},
+                "value": true
+              },
+              {"value": false}
+            ]
+          }
+        },
+        "result": {
+          "result1": true,
+          "result2": false
+        }
       }
     ]
   }
