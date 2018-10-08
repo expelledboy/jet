@@ -39,17 +39,14 @@ do_transform(#{ <<"case">> := Case}, Source, ElementSource) when is_list(Case)->
 do_transform(#{ <<"case">> := _Case}, _Source, _ElementSource) ->
     throw(invalid_case_transform);
 do_transform(#{ <<"path">> := Path } = Transform, Source, ElementSource) ->
-    Value0 = do_transform(Path, Source, ElementSource),
-    case (Value0==undefined) of
-        true ->
-            case (maps:get(<<"default">>,Transform)) of
-                {badkey,<<"default">>} ->
-                    Value1 = Value0;
-                Default ->
-                    Value1 = Default
+    case do_transform(Path, Source, ElementSource) of
+        undefined ->
+            Value = case (maps:get(<<"default">>,Transform)) of
+                {badkey,<<"default">>} -> undefined;
+                Default -> Default
             end,
-            do_function(Value1, Transform);
-        false ->
+            do_function(Value, Transform);
+        Value0 ->
             do_function(Value0, Transform)
     end;
 do_transform(#{ <<"default">> := Default } = Transform, _Source, _ElementSource) ->
