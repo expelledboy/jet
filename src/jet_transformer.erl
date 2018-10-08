@@ -25,7 +25,6 @@ do_transform(Transform, Source, ElementSource) when is_binary(Transform) ->
         {true, Pointer} -> jet_pointer:get(Pointer, ElementSource);
         {false, Pointer} -> jet_pointer:get(Pointer, Source)
     end;
-
 do_transform(#{ <<"foreach">> := ArrayPointer,
                 <<"properties">> := PropTransforms },
              Source, _ElementSource) ->
@@ -38,7 +37,7 @@ do_transform(#{ <<"properties">> := PropTransforms }, Source, ElementSource) ->
 do_transform(#{ <<"case">> := Case}, Source, ElementSource) when is_list(Case)->
     do_case(Case, Source, ElementSource);
 do_transform(#{ <<"case">> := _Case}, _Source, _ElementSource) ->
-    undefined;
+    throw(invalid_case_transform);
 do_transform(#{ <<"path">> := Path } = Transform, Source, ElementSource) ->
     Value0 = do_transform(Path, Source, ElementSource),
     case (Value0==undefined) of
@@ -55,7 +54,7 @@ do_transform(#{ <<"path">> := Path } = Transform, Source, ElementSource) ->
     end;
 do_transform(#{ <<"default">> := Default } = Transform, _Source, _ElementSource) ->
     do_function(Default, Transform);
-do_transform(Value,Source,ElementSource) ->
+do_transform(Value,_Source,_ElementSource) ->
     Value.
 %% --
 
@@ -63,7 +62,7 @@ do_function(Value, #{ <<"transform">> := Function }) ->
     Fun = binary_to_existing_atom(Function, unicode),
     case erlang:function_exported(jet_functions, Fun, 1) of
         true -> jet_functions:Fun(Value);
-        false -> throw({conversion_not_supported, Function})
+        false -> throw({transform_not_supported, Function})
     end;
 do_function(Value, _Transform) ->
     Value.
@@ -78,7 +77,7 @@ do_case([#{<<"pattern">> := Pattern, <<"value">> := Value}| Tail], Source, Eleme
 do_case([#{<<"value">> := Value}| _Tail], Source, ElementSource) ->
     do_transform(Value, Source, ElementSource);
 do_case([], _Source, _ElementSource) ->
-    undefined.
+    throw(invalid_case_transform).
 %% --
 
 is_relative_pointer(Pointer) ->
