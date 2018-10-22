@@ -6,6 +6,8 @@
 -compile(export_all).
 -endif.
 
+-include_lib("eunit/include/eunit.hrl").
+
 match(#{<<"and">> := Ands}, Json) when is_list(Ands) ->
     lists:all(fun (And) -> match(And, Json) end, Ands);
 match(#{<<"or">> := Ors}, Json) when is_list(Ors) ->
@@ -21,7 +23,8 @@ match(Pattern, Json) when is_map(Pattern) ->
 match_property(Property, Conditions, Json) when is_map(Conditions) ->
     ValueToCompare = jet_pointer:get(Property, Json),
     maps:fold(fun (Operator, Comparator, IsMatch) ->
-                    IsMatch and match_condition(Operator, Comparator, ValueToCompare)
+                    Comp = ref_or_value(Comparator,Json),
+                    IsMatch and match_condition(Operator, Comp, ValueToCompare)
               end, true, Conditions).
 
 match_condition(<<"=">>, Comparator, Value) when is_boolean(Comparator), is_boolean(Value);
@@ -101,3 +104,8 @@ match_condition(<<"type">>, Type, _Value) ->
 match_condition(<<"regex">>, Comparator, Value) ->
     {ok, MP} = re:compile(Comparator),
     {ok, match} == re:run(Value, MP).
+
+ref_or_value(#{ <<"$ref">> := Ref }, Json) ->
+    jet_pointer:get(Ref, Json);
+ref_or_value(Value, _Json) ->
+    Value.

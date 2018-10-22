@@ -9,7 +9,8 @@
       [
         { "name": "John", "age": 30, "balance": 15000 },
         { "name": "Mary", "age": 50, "balance": 20000.50 }
-      ]
+      ],
+      "details2": { "name": "Zeus", "age": 30, "balance": 100.05 }
     },
     "patterns":
     [
@@ -790,6 +791,26 @@
         "description": "type(any,object) - no match",
         "pattern": { "/details/balance": { "type": "object" } },
         "result": false
+      },
+      {
+        "description": "type(any,object) - no match",
+        "pattern": { "/details/balance": { "type": "object" } },
+        "result": false
+      },
+      {
+        "description": "=(string,string) - match reference ($ref)",
+        "pattern": { "/details/name": { "=": { "$ref": "/details2/name"} } },
+        "result": true
+      },
+      {
+        "description": "<(int,int) - match reference ($ref)",
+        "pattern": { "/details/age": { "<": { "$ref": "/details2/age"} } },
+        "result": true
+      },
+      {
+        "description": ">(int,int) - match reference ($ref)",
+        "pattern": { "/details2/age": { ">": { "$ref": "/details/age"} } },
+        "result": true
       },
       {
         "description": "and/or/not pattern",
