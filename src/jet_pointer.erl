@@ -1,6 +1,6 @@
 -module(jet_pointer).
 
--export([get/2, get/3, put/3]).
+-export([get/2, put/3, remove/2]).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -55,7 +55,23 @@ put(PathList, _Value, Json) when is_list(PathList), is_list(Json), length(PathLi
 put([], Value, _Json) ->
     Value.
 
-%% --
+remove(PathString, Map) when is_binary(PathString) ->
+    remove(string:lexemes(PathString, "/"), Map);
+remove([Key | []], Json) when is_map(Json) ->
+    case maps:is_key(Key, Json) of
+        true ->
+            maps:remove(Key,Json);
+        false ->
+            Json
+    end;
+remove([Key | Path], Json) when is_map(Json) ->
+    case maps:is_key(Key, Json) of
+        true ->
+            NestedValue = remove(Path, maps:get(Key, Json)),
+            maps:update(Key, NestedValue, Json);
+        false ->
+            Json
+    end.
 
 parse(Path) when is_list(Path) ->
     parse(list_to_binary(Path), []);

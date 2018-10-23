@@ -1,5 +1,7 @@
 -module(jet_merger).
 
+-include_lib("eunit/include/eunit.hrl").
+
 -export([merge/3]).
 
 -ifdef(TEST).
@@ -7,15 +9,17 @@
 -endif.
 
 merge(MergeSpec, Source, Dest) when is_map(MergeSpec) ->
+    CleanedSource = merge_delete(MergeSpec, Source),
+    CleanedDest = merge_delete(MergeSpec, Dest),
     Path = <<"/">>,
     MergeType = get_merge_type(MergeSpec, Path),
-    merge(MergeType, MergeSpec, Source, Dest, Path).
-
+    merge(MergeType, MergeSpec, CleanedSource, CleanedDest, Path).
 merge(append, MergeSpec, Source, Dest, Path) when is_map(Source), is_map(Dest) ->
     maps:fold(fun(Prop, PropValue, DestAcc)->
                       PropPath = append_to_path(Path, Prop),
                       merge(append, MergeSpec, PropValue, DestAcc, PropPath)
               end, Dest, Source);
+
 merge(append, _MergeSpec, Source, Dest, Path) ->
     case jet_pointer:get(Path, Dest) of
         undefined ->
@@ -45,6 +49,18 @@ merge(merge, MergeSpec, Source, Dest, Path) ->
 
 %% --
 
+merge_delete(MergeSpec,Dest) ->
+    maps:fold(
+        fun(K,V,Acc) ->
+            case V == <<"delete">> of
+                true -> jet_pointer:remove(K, Acc);
+                false -> Acc
+            end
+        end,
+        Dest,
+        MergeSpec
+    ).
+
 get_merge_type(MergeSpec, _Path) when is_atom(MergeSpec)->
     MergeSpec;
 get_merge_type(MergeSpec, Path) ->
@@ -55,3 +71,4 @@ append_to_path(Path, Append) when Path == <<"/">> ->
     erlang:iolist_to_binary([Path, Append]);
 append_to_path(Path, Append) ->
     erlang:iolist_to_binary([Path, <<"/">>, Append]).
+
