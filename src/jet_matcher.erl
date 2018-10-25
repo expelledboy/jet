@@ -6,8 +6,6 @@
 -compile(export_all).
 -endif.
 
--include_lib("eunit/include/eunit.hrl").
-
 match(#{<<"and">> := Ands}, Json) when is_list(Ands) ->
     lists:all(fun (And) -> match(And, Json) end, Ands);
 match(#{<<"or">> := Ors}, Json) when is_list(Ors) ->
