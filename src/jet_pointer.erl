@@ -1,6 +1,6 @@
 -module(jet_pointer).
 
--export([get/2, put/3, remove/2]).
+-export([get/2, get/3, put/3, remove/2]).
 
 -include_lib("eunit/include/eunit.hrl").
 
