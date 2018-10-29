@@ -11,39 +11,42 @@ pointer_test_() ->
     Suite = jiffy:decode(File, [return_maps]),
     lists:map(fun gen_pointer_tests/1, Suite).
 
-gen_pointer_tests(Path) ->
-    Type = maps:get(<<"test-type">>, Path),
-    case Type of
-        <<"get">> ->
-            Object = maps:get(<<"object">>, Path),
-            Pointers = maps:get(<<"pointers">>, Path),
-            lists:map(fun(#{ <<"description">> := Description,
-                             <<"path">> := Pointer,
-                             <<"result">> := Expected }) ->
-                              {Description,
-                               ?_assertEqual(Expected, ((?MOD):get(Pointer, Object)))}
-                      end, Pointers);
-        <<"get-default">> ->
-            Object = maps:get(<<"object">>, Path),
-            Pointers = maps:get(<<"pointers">>, Path),
-            lists:map(fun(#{ <<"description">> := Description,
-                             <<"path">> := Pointer,
-                             <<"result">> := Expected}) ->
-                              {Description,
-                               ?_assertEqual(Expected, ((?MOD):get(Pointer, Object, Expected)))}
-                      end, Pointers);
-        <<"add">> ->
-            Objects = maps:get(<<"objects">>, Path),
-            lists:map(fun(#{<<"description">> := Description,
-                            <<"properties">> := Properties,
-                            <<"result">> := Expected }) ->
-                              {Description, ?_assertEqual(Expected, create_object(Properties))}
-                      end, Objects)
-    end.
+gen_pointer_tests(Case) ->
+    Type = maps:get(<<"test-type">>, Case),
+    lists:map(fun({Desc, Test}) ->
+                      {<<Type/binary, ": ", Desc/binary>>, Test}
+              end, gen_pointer_tests(Type, Case)).
+
+gen_pointer_tests(<<"get">>, Case) ->
+    Object = maps:get(<<"object">>, Case),
+    Pointers = maps:get(<<"pointers">>, Case),
+    lists:map(fun(#{ <<"description">> := Desc,
+                     <<"path">> := Pointer,
+                     <<"result">> := Expected }) ->
+                      Value = (catch ?MOD:get(Pointer, Object)),
+                      {Desc, ?_assertEqual(Expected, Value)}
+              end, Pointers);
+gen_pointer_tests(<<"get-default">>, Case) ->
+    Object = maps:get(<<"object">>, Case),
+    Pointers = maps:get(<<"pointers">>, Case),
+    lists:map(fun(#{ <<"description">> := Desc,
+                     <<"path">> := Pointer,
+                     <<"default">> := Default,
+                     <<"result">> := Expected }) ->
+                      Value = (catch ?MOD:get(Pointer, Object, Default)),
+                      {Desc, ?_assertEqual(Expected, Value)}
+              end, Pointers);
+gen_pointer_tests(<<"put">>, Case) ->
+    Objects = maps:get(<<"objects">>, Case),
+    lists:map(fun(#{<<"description">> := Desc,
+                    <<"properties">> := Properties,
+                    <<"result">> := Expected }) ->
+                      {Desc, ?_assertEqual(Expected, create_object(Properties))}
+              end, Objects).
 
 create_object(Properties) ->
     lists:foldl(fun(Property, Map) ->
                         Path = maps:get(<<"path">>, Property),
                         Value = maps:get(<<"value">>, Property),
-                        (?MOD):put(Path, Value, Map)
+                        ?MOD:put(Path, Value, Map)
                 end, maps:new(), Properties).

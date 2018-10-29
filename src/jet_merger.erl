@@ -49,8 +49,8 @@ merge(merge, MergeSpec, Source, Dest, Path) ->
 
 merge_delete(MergeSpec, Map) ->
     maps:fold(fun
-                  (K,<<"delete">>,Acc) -> jet_pointer:remove(K, Acc);
-                  (_K,_V,Acc) -> Acc
+                  (K, <<"delete">>, Acc) -> jet_pointer:remove(K, Acc);
+                  (_K, _V, Acc) -> Acc
               end, Map, MergeSpec).
 
 get_merge_type(MergeSpec, _Path) when is_atom(MergeSpec)->

@@ -15,7 +15,11 @@ gen_pattern_tests(Case) ->
     Object = maps:get(<<"object">>, Case),
     Patterns = maps:get(<<"patterns">>, Case),
     lists:map(fun(#{ <<"description">> := Description,
-                     <<"pattern">> := Pattern,
-                     <<"result">> := Expected }) ->
-                      {Description, ?_assertEqual(Expected, ((?MOD):match(Pattern, Object)))}
+                     <<"pattern">> := Pattern } = Test) ->
+                      Expected = maps:get(<<"result">>, Test, true),
+                      test(Description, Expected, Pattern, Object)
               end, Patterns).
+
+test(Description, Expected, Pattern, Object) ->
+    Match = (catch ?MOD:match(Pattern, Object)),
+    {Description, ?_assertEqual(Expected, Match)}.

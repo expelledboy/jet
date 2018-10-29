@@ -3,39 +3,45 @@
     "test-type": "get",
     "object":
     {
-      "id": 123,
-      "registered":true,
-      "details": {
-        "name": "Zeus",
-        "age": 25,
-        "balance": 100.05,
-        "numbers": ["0712228373", "0112738292"]
+      "a": 1,
+      "b": {
+        "c": 2,
+        "d": ["one", "two"]
       },
-      "contacts": [
-        { "name": "John", "age": 30, "balance": 15000 },
-        { "name": "Mary", "age": 50, "balance": 20000.50 }
+      "e": [
+        { "f": 4 },
+        { "g": 5 }
       ]
     },
     "pointers": [
       {
-        "description": "get property: root property",
-        "path": "/id",
-        "result": 123
+        "description": "root",
+        "path": "/",
+        "result": {
+          "a": 1,
+          "b": { "c": 2, "d": ["one", "two"] },
+          "e": [{ "f": 4 }, { "g": 5 }]
+        }
       },
       {
-        "description": "get property: nested array from first element",
-        "path": "/details/numbers/0",
-        "result": "0712228373"
+        "description": "property",
+        "path": "/a",
+        "result": 1
       },
       {
-        "description": "get property: nested array from last element",
-        "path": "/details/numbers/-1",
-        "result": "0112738292"
+        "description": "nested array positive index",
+        "path": "/e/0",
+        "result": { "f": 4 }
       },
       {
-        "description": "get property: nested object in array",
-        "path": "/contacts/1/age",
-        "result": 50
+        "description": "nested array negative index",
+        "path": "/e/-1",
+        "result": { "g": 5 }
+      },
+      {
+        "description": "property form nested object in array",
+        "path": "/e/0/f",
+        "result": 4
       }
     ]
   },
@@ -43,16 +49,23 @@
     "test-type": "get-default",
     "object":
     {
-      "x": 123,
+      "x": 1,
       "y": {
-        "z": "abc"
+        "z": "a"
       }
     },
     "pointers": [
       {
-        "description": "get with default",
+        "description": "non-existent path with default",
         "path": "/y/q",
-        "result": 123
+        "default": 2,
+        "result": 2
+      },
+      {
+        "description": "non-existent path with default",
+        "path": "/x",
+        "default": 2,
+        "result": 1
       }
     ]
   },
@@ -60,94 +73,61 @@
     "test-type": "get",
     "object": [
       {
-        "id": 123,
-        "registered":true,
-        "details": {
-          "name": "Zeus",
-          "age": 25,
-          "balance": 100.05,
-          "numbers": ["0712228373", "0112738292"]
-        },
-        "contacts": [
-          { "name": "John", "age": 30, "balance": 15000 },
-          { "name": "Mary", "age": 50, "balance": 20000.50 }
-        ]
+        "a": 1
       },
       {
-        "id": 231,
-        "registered":false,
-        "details": {
-          "name": "Mary",
-          "age": 35,
-          "balance": 10000.05,
-          "numbers": ["0712228373", "0112738292"]
-        },
-        "contacts": []
+        "b": 2
       }
     ],
     "pointers": [
       {
-        "description": "get property: root object is array",
-        "path": "1/details/name",
-        "result": "Mary"
+        "description": "where root object is array",
+        "path": "1/b",
+        "result": 2
       }
     ]
   },
   {
-    "test-type": "add",
+    "test-type": "put",
     "objects": [
       {
-        "description": "add property: simple contact object",
+        "description": "properties of all types",
         "properties": [
           {
-            "path": "/name",
-            "value": "Fred"
+            "path": "/string",
+            "value": "value"
           },
           {
-            "path": "/age",
-            "value": 20
+            "path": "/int",
+            "value": 1
           },
           {
-            "path": "/balance",
-            "value": 100.03
+            "path": "/float",
+            "value": 1.05
           }
         ],
         "result": {
-          "name": "Fred",
-          "age": 20,
-          "balance": 100.03
+          "string": "value",
+          "int": 1,
+          "float": 1.05
         }
       },
       {
-        "description": "add property: complex object",
+        "description": "property to nested object",
         "properties": [
           {
-            "path": "/name",
-            "value": "Fred"
+            "path": "/a",
+            "value": 1
           },
           {
-            "path": "/age",
-            "value": 20
-          },
-          {
-            "path": "/account/number",
-            "value": "192555"
-          },
-          {
-            "path": "/account/balance",
-            "value": 100.03
-          },
-          {
-            "path": "/account/balance",
-            "value": 100.01
+            "path": "/nested/b",
+            "value": 2
           }
         ],
         "result": {
-          "name": "Fred",
-          "age": 20,
-          "account": {
-            "number": "192555",
-            "balance": 100.01
+          "a": 1,
+          "nested": {
+            "b": 2
           }
         }
       }
