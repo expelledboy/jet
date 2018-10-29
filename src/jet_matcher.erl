@@ -21,7 +21,7 @@ match(Pattern, Json) when is_map(Pattern) ->
 match_property(Property, Conditions, Json) when is_map(Conditions) ->
     ValueToCompare = jet_pointer:get(Property, Json),
     maps:fold(fun (Operator, Comparator, IsMatch) ->
-                    Comp = ref_or_value(Comparator,Json),
+                    Comp = ref_or_value(Comparator, Json),
                     IsMatch and match_condition(Operator, Comp, ValueToCompare)
               end, true, Conditions).
 

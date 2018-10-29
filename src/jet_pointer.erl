@@ -34,7 +34,7 @@ get(_Key, Value) ->
     Value.
 
 get(PathString, Json, Default) when is_binary(PathString) ->
-    case get(PathString,Json) of
+    case get(PathString, Json) of
         undefined -> Default;
         Value -> Value
     end.
@@ -59,10 +59,8 @@ remove(PathString, Map) when is_binary(PathString) ->
     remove(string:lexemes(PathString, "/"), Map);
 remove([Key | []], Json) when is_map(Json) ->
     case maps:is_key(Key, Json) of
-        true ->
-            maps:remove(Key,Json);
-        false ->
-            Json
+        true -> maps:remove(Key, Json);
+        false -> Json
     end;
 remove([Key | Path], Json) when is_map(Json) ->
     case maps:is_key(Key, Json) of

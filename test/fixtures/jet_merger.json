@@ -1,8 +1,7 @@
 [
   {
     "source-object": [1],
-    "merges":
-    [
+    "merges": [
       {
         "description": "append lists",
         "dest-object": [2],
@@ -25,8 +24,7 @@
   },
   {
     "source-object": {"a": true},
-    "merges":
-    [
+    "merges": [
       {
         "description": "append objects",
         "dest-object": {"b": true},
@@ -49,8 +47,7 @@
   },
   {
     "source-object": {"a": {"c": true, "e": true}, "b": true},
-    "merges":
-    [
+    "merges": [
       {
         "description": "append nested objects",
         "dest-object": {"a": {"d": true, "e": false}, "b": false, "f": true},
@@ -83,8 +80,7 @@
         }
       }
     },
-    "merges":
-    [
+    "merges": [
       {
         "description": "append nested objects",
         "dest-object": {
@@ -122,10 +118,8 @@
     ]
   },
   {
-    "source-object":
-      {"a": 1, "b": 2},
-    "merges":
-    [
+    "source-object": {"a": 1, "b": 2},
+    "merges": [
       {
         "description": "delete property",
         "dest-object": {"b":1, "c": 3, "d": {"e": {"f": 1, "g": 1}, "h": 2}},

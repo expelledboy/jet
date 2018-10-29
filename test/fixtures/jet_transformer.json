@@ -1,172 +1,157 @@
 [
   {
-    "object":
-    {
-      "id": 123,
-      "registered":true,
-      "hash": "12345",
-      "details": {
-        "name": "Zeus",
-        "age": 25,
-        "balance": 100.05,
-        "numbers": ["0712228373", "0112738292"]
+    "object": {
+      "a": 1,
+      "b": "2",
+      "c": {
+        "d": 3,
+        "e": ["4", "5"]
       },
-      "contacts": [
-        { "name": "John", "age": 30, "balance": 15000 },
-        { "name": "Mary", "age": 50, "balance": 20000.50 }
+      "f": [
+        { "g": 6, "id": 1 },
+        { "h": 7, "id": 2 },
+        { "id": 3 }
       ]
     },
     "transforms": [
       {
-        "description": "to flat object transform",
+        "description": "get by path",
         "transform": {
-          "/name": "/details/name",
-          "/age": { "path": "/details/age" },
-          "/contacts": "/contacts"
+          "/x": "/a",
+          "/y": { "path": "/b" },
+          "/z/m": "/c/d"
         },
         "result": {
-          "name": "Zeus",
-          "age": 25,
-          "contacts": [
-            { "name": "John", "age": 30, "balance": 15000 },
-            { "name": "Mary", "age": 50, "balance": 20000.50 }
-          ]
+          "x": 1,
+          "y": "2",
+          "z": { "m": 3 }
         }
       },
       {
-        "description": "to flat object with conversion transforms",
+        "description": "apply conversion transforms",
         "transform": {
-          "/name": "/details/name",
-          "/age": {"path": "/details/age", "transform": "to_string"},
-          "/hash-int":{"path": "/hash", "transform": "to_integer"}
+          "/x": {"path": "/a", "transform": "to_integer"},
+          "/y": {"path": "/b", "transform": "to_string"}
         },
         "result": {
-          "name": "Zeus",
-          "age": "25",
-          "hash-int": 12345
+          "x": 1,
+          "y": "2"
         }
       },
       {
         "description": "object from props transform",
         "transform": {
-          "/person": {
+          "/obj": {
             "properties": {
-              "/id": "/id",
-              "name": "/details/name",
-              "/age": "/details/age"
+              "/x": "/a",
+              "/y": "/b",
+              "/z": "/c/d"
             }
           }
         },
-        "result": {"person": {"id":123, "name": "Zeus", "age": 25}}
+        "result": {"obj": {"x": 1, "y": "2", "z": 3}}
       },
       {
-        "description": "foreach transform",
+        "description": "foreach transform in property",
         "transform": {
-          "/name": "/details/name",
-          "/age": "/details/age",
-          "/contacts": {
-            "foreach": "/contacts",
+          "/prop": "/b",
+          "/mapped": {
+            "foreach": "/f",
             "properties": {
-              "/id": "/id",
-              "/person": "0/name",
-              "/age": "0/age"
+              "/external": "/a",
+              "/internal": {"path": "0/id", "transform": "to_string"}
             }
           }
         },
         "result": {
-          "name": "Zeus",
-          "age": 25,
-          "contacts": [
-            { "id": 123, "person": "John", "age": 30},
-            { "id": 123, "person": "Mary", "age": 50}
+          "prop": "2",
+          "mapped": [
+            { "external": 1, "internal": "1" },
+            { "external": 1, "internal": "2" },
+            { "external": 1, "internal": "3" }
           ]
-        }
-      },
-      {
-        "description": "complex foreach transform",
-        "transform": {
-          "/name": "/details/name",
-          "/age": "/details/age",
-          "/contacts": {
-            "foreach": "/contacts", "properties": {
-              "/id": "/id",
-              "/person": {
-                "properties": {
-                  "name": "0/name",
-                  "/age": {"path": "0/age", "transform": "to_string"}
-                }
-              }
-            }
-          }
-        },
-        "result": {
-          "name": "Zeus",
-          "age": 25,
-          "contacts": [
-            { "id": 123, "person": {"name": "John", "age": "30"}},
-            { "id": 123, "person": {"name": "Mary", "age": "50"}}
-          ]
-        }
-      },
-      {
-        "description": "string/array length transform test",
-        "transform": {
-          "/name-length": {"path": "/details/name", "transform": "length"},
-          "/contact-count": { "path": "/contacts", "transform": "length"}
-        },
-        "result": {
-          "name-length": 4,
-          "contact-count": 2
         }
       },
       {
         "description": "transforms with defaults",
         "transform": {
-          "/name": "/details/name",
-          "/age": { "path": "/details/age", "default": 4 },
-          "/arbitrary1": {"path": "/arbitrary1", "default": "foo"},
-          "/arbitrary2": {"default": "bar"},
-          "/contacts": "/contacts"
+          "/x": { "path": "/a", "default": 1 },
+          "/y": { "path": "/m", "default": 2 },
+          "/z": { "default": 3 }
         },
         "result": {
-          "name": "Zeus",
-          "age": 25,
-          "arbitrary1": "foo",
-          "arbitrary2": "bar",
-          "contacts": [
-            { "name": "John", "age": 30, "balance": 15000 },
-            { "name": "Mary", "age": 50, "balance": 20000.50 }
-          ]
+          "x": 1,
+          "y": 2,
+          "z": 3
         }
       },
       {
-        "description": "transform with pattern",
+        "description": "case per property",
         "transform": {
-          "/result1": {
+          "/one": {
             "case": [
               {
                 "pattern": {
-                  "/details/name": {"in": ["Zeus","Paul"]},
-                  "/details/age": {">": 24, "<": 30}
+                  "/b": {"in": ["1","2"]},
+                  "/a": {"<": 30}
                 },
-                "value": true
+                "default": true
               },
-              {"value": false}
+              {"default": false}
             ]
           },
-          "/result2": {
+          "/two": {
             "case": [
               {
-                "pattern": {"/contacts/0/age": {"<=": 0}},
-                "value": true
+                "pattern": {"a": {"=": 2}},
+                "default": true
               },
-              {"value": false}
+              {"default": false}
             ]
           }
         },
         "result": {
-          "result1": true,
-          "result2": false
+          "one": true,
+          "two": false
+        }
+      },
+      {
+        "description": "case using properties",
+        "transform": {
+          "case": [
+            {
+              "pattern": {"a": {"=": 1}},
+              "properties": {
+                "/x": "/a",
+                "/y": "/b",
+                "/z": "/c/d"
+              }
+            }
+          ]
+        },
+        "result": {
+          "x": 1,
+          "y": "2",
+          "z": 3
+        }
+      }
+    ]
+  },
+  {
+    "object": {
+      "string": "one",
+      "list": [10, 20, 30]
+    },
+    "transforms": [
+      {
+        "description": "string/array length transform test",
+        "transform": {
+          "/string-length": {"path": "/string", "transform": "length"},
+          "/list-count": { "path": "/list", "transform": "length"}
+        },
+        "result": {
+          "string-length": 3,
+          "list-count": 3
         }
       }
     ]
