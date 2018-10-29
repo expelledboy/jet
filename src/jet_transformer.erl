@@ -34,10 +34,10 @@ transform_prop(#{ <<"foreach">> := ArrayPointer,
     lists:map(fun(ElementSource) ->
                       transform_map(PropTransforms, Source, ElementSource)
               end, SourceArray);
-transform_prop(#{ <<"case">> := Case }, Source, ElementSource) when is_list(Case)->
-    transform_case(Case, Source, ElementSource);
 transform_prop(#{ <<"properties">> := PropTransforms }, Source, ElementSource) ->
     transform_map(PropTransforms, Source, ElementSource);
+transform_prop(#{ <<"case">> := Case }, Source, ElementSource) when is_list(Case)->
+    transform_case(Case, Source, ElementSource);
 transform_prop(#{ <<"path">> := Path } = Transform, Source, ElementSource) ->
     Default = maps:get(<<"default">>, Transform, undefined),
     case transform_prop(Path, Source, ElementSource) of
